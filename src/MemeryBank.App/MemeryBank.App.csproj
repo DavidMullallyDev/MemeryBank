@@ -68,6 +68,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\MemeryBank.Client\MemeryBank.Client.csproj" />
+      <ProjectReference Include="..\MemeryBank.Core.Shared\MemeryBank.Core.Shared.csproj" />
       <ProjectReference Include="..\MemeryBank.Shared\MemeryBank.Shared.csproj" />
     </ItemGroup>
 
