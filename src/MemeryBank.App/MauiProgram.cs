@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MudBlazor.Services;
 
 namespace MemeryBank.App;
 
@@ -18,7 +19,8 @@ public static class MauiProgram
 
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Services.AddMudServices();
+        builder.Logging.AddDebug();
 #endif
 
 		return builder.Build();

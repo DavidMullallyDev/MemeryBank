@@ -1,0 +1,29 @@
+﻿<div class="meme-card">
+<InputFile OnChange="ShowImage" />
+<MudFlexBreak/>
+@if (!string.IsNullOrEmpty(previewUrl))
+{
+    <img src="@previewUrl" style="max-width:400px; border:1px solid #ccc;" />
+    <MudFlexBreak />
+    <!-- Download link -->
+    <a href="@previewUrl" download="my-image.png">
+        Download Image
+    </a>
+}
+</div>
+@code {
+    private string? previewUrl;
+
+    private async Task ShowImage(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+
+        // Convert to base64 string so it can be displayed directly
+        using var stream = file.OpenReadStream(maxAllowedSize: 5_000_000); // 5 MB
+        using var ms = new MemoryStream();
+        await stream.CopyToAsync(ms);
+        var bytes = ms.ToArray();
+
+        previewUrl = $"data:{file.ContentType};base64,{Convert.ToBase64String(bytes)}";
+    }
+}
