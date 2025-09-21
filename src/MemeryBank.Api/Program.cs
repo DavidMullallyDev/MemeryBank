@@ -23,7 +23,9 @@ builder.Services.AddRouting(options =>
 {
     options.ConstraintMap.Add("months", typeof(MonthsCustomConstraint));
 });
+builder.Services.AddControllers();
 var app = builder.Build();
+app.MapControllers();
 
 //(introduced in asp.net core 6) Routing is automatically enabled
 //no need for app.UseRouting anymore
@@ -57,7 +59,7 @@ app.UseStaticFiles(); //works with wwwroot by default if theres a webrootpath sp
 // FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, @"\myWebRoot"))
 //}); works with myWebRoot
 
-app.Map("memes/{fileName}.{fileExt}", async(context) =>
+app.Map("memes/{fileName}.{fileExt}", async (context) =>
 {
     string? fileName = $"{context.Request.RouteValues["fileName"]?.ToString()}.{context.Request.RouteValues["fileExt"]?.ToString()}";
     await context.Response.WriteAsync($"{fileName} retrieved successfully");

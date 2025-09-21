@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\sample-1.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.8" />
   </ItemGroup>
 
