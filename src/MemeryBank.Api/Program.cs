@@ -1,6 +1,8 @@
 using MemeryBank.Api.Constraints;
 using MemeryBank.Api.Middleware;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
+using Microsoft.OpenApi.Services;
 using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -47,7 +49,13 @@ var app = builder.Build();
 
 //add your custom middleware
 
-app.UseStaticFiles();
+app.UseStaticFiles(); //works with wwwroot by default if theres a webrootpath specified in the builder
+
+//`//if you want to have more than one folder for static files then call another app.UseStaticFiles as follows
+//app.UseStaticFiles(new StaticFileOptions()
+//{
+// FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, @"\myWebRoot"))
+//}); works with myWebRoot
 
 app.Map("memes/{fileName}.{fileExt}", async(context) =>
 {
