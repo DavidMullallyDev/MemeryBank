@@ -1,12 +1,17 @@
 using MemeryBank.Api.Constraints;
 using MemeryBank.Api.Middleware;
+using MemeryBank.Api.ModelBinders;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Services;
 using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
-
+// Modelbinders will be executed in the order they are in thats why i inserted this at 0
+builder.Services.AddControllers(options =>
+{
+   // options.ModelBinderProviders.Insert(0, new CustomPersonModelBinderProvider()); //if you want to use custom model binders
+}).AddXmlSerializerFormatters(); // if you want to be able to read xml from the request body
 //// If you want to use a folder other that wwwroot for static files 
 //// wwwroot folder must still exist though
 // var builder = WebApplication.CreateBuilder(WebApplIcationOptions()

@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MemeryBank.Api.Models;
+using MemeryBank.Api.ValidatableObjects;
+using MemeryBank.Api.ModelBinders;
+using MemeryBank.Api.Middleware;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace MemeryBank.Api.Controllers
 {
@@ -33,7 +37,7 @@ namespace MemeryBank.Api.Controllers
         [Route("person")]
         public JsonResult Person()
         {
-            Person person = new() {Id = Guid.NewGuid() , FirstName = "Dengo", LastName = "Mullally", Email="mullallydavid99@outlook.com", Age=40};
+            Person person = new() {Id = Guid.NewGuid() , FirstName = "Dengo", LastName = "Mullally", Email="mullallydavid99@outlook.com", DateOfBirth= new DateTime(7/1/1985)};
             return Json(person);
             //return new JsonResult(person);
         }
@@ -62,45 +66,96 @@ namespace MemeryBank.Api.Controllers
             //return new FileContentResult(fileByteArr, "image/png");
         }
 
-        [Route("meme")]
-        public IActionResult Meme()
+
+        //// Without model binding
+        ////[Route("meme")]
+        ////public IActionResult Meme()
+        ////{
+        ////    IQueryCollection query = ControllerContext.HttpContext.Request.Query;
+        ////    HttpResponse response = ControllerContext.HttpContext.Response;
+        ////    if (Convert.ToBoolean(query["isloggedin"]) == false)
+        ////    {
+        ////        return Unauthorized("You must login to proceed");
+        ////        //response.StatusCode = 401;
+        ////        //return Content("You must login to proceed");
+        ////    }
+
+        ////    if (!query.ContainsKey("memeid"))
+        ////    {
+        ////        return BadRequest("An Id must be entered");
+        ////        //response.StatusCode = 400;
+        ////        //return Content("An Id must be entered");
+        ////    }
+        ////    else
+        ////    {
+        ////        if (String.IsNullOrEmpty(query["memeid"])) 
+        ////        {
+        ////            return BadRequest("the id cannot be empty");
+        ////            //response.StatusCode = 400;
+        ////            //return Content("the id cannot be empty");
+        ////        };
+
+        ////        int? memeId = Convert.ToInt32(query["memeid"]);
+        ////        if (memeId <= 0 || memeId > 1000)
+        ////        {
+        ////            ////NotFound() = not found result
+        ////            ////NotFound("....") = not found object result
+        ////            return NotFound("The id is outside the range of 1-1000");
+        ////            //response.StatusCode = 400;
+        ////            //return Content("The id is outside the range of 1-1000");
+        ////        }
+        ////        else
+        ////        {
+        ////            return File("sample-1.png", "image/png");
+        ////        }
+        ////    }
+        ////}
+
+        //// using model binding (model binding occurs automaically in aspnet.core)
+        /// making it much eiser to work with requests 
+        /// as a defualt the data will be looked for in the form Fields, then the request body, then the Route data, and finally the query string paramenters
+        /// form fields should be used when a form has 10 or more fields to submit ... if you want to submit one or more files - form fields is the only option
+        /// this can be limited to a single source by adding [FromRoute], [fromQuery] --- this can also be added a model for a specific parameter
+        [Route("meme/{memeid?}/{isloggedin?}")]
+        public IActionResult Meme(int? memeid, string? author, bool? isloggedin, Meme meme)
         {
-            IQueryCollection query = ControllerContext.HttpContext.Request.Query;
             HttpResponse response = ControllerContext.HttpContext.Response;
-            if (Convert.ToBoolean(query["isloggedin"]) == false)
+            if (!isloggedin.HasValue || isloggedin == false)
             {
                 return Unauthorized("You must login to proceed");
                 //response.StatusCode = 401;
                 //return Content("You must login to proceed");
-            }
-
-            if (!query.ContainsKey("memeid"))
+            } else
             {
-                return BadRequest("An Id must be entered");
-                //response.StatusCode = 400;
-                //return Content("An Id must be entered");
-            }
-            else
-            {
-                if (String.IsNullOrEmpty(query["memeid"])) 
+                if (memeid.HasValue == false)
                 {
-                    return BadRequest("the id cannot be empty");
+                    return BadRequest("An Id must be entered");
                     //response.StatusCode = 400;
-                    //return Content("the id cannot be empty");
-                };
-
-                int? memeId = Convert.ToInt32(query["memeid"]);
-                if (memeId <= 0 || memeId > 1000)
-                {
-                    ////NotFound() = not found result
-                    ////NotFound("....") = not found object result
-                    return NotFound("The id is outside the range of 1-1000");
-                    //response.StatusCode = 400;
-                    //return Content("The id is outside the range of 1-1000");
+                    //return Content("An Id must be entered");
                 }
                 else
                 {
-                    return File("sample-1.png", "image/png");
+                    if (memeid <= 0)
+                    {
+                        return BadRequest("the id cannot be empty");
+                        //response.StatusCode = 400;
+                        //return Content("the id cannot be empty");
+                    }
+                    ;
+
+                    if (memeid <= 0 || memeid > 1000)
+                    {
+                        ////NotFound() = not found result
+                        ////NotFound("....") = not found object result
+                        return NotFound("The id is outside the range of 1-1000");
+                        //response.StatusCode = 400;
+                        //return Content("The id is outside the range of 1-1000");
+                    }
+                    else
+                    {
+                        return Content($"Meme ID: {memeid}-----{meme}");
+                        //return File("sample-1.png", "image/png");
+                    }
                 }
             }
         }
@@ -117,5 +172,63 @@ namespace MemeryBank.Api.Controllers
             //// return new RedirectToActionResult("Book", "Store", new { }, true);
             /////adding true will signify that the zrl has changed premanently and the old one can be ignored by search engines going forward
         }
+
+
+        //[Route("register")]
+        //public IActionResult Register(Person person)
+        //{
+        //    List<string> errors = [];
+        //    if (!ModelState.IsValid) {
+        //        foreach (var val in ModelState.Values)
+        //        {
+        //            foreach (var err in val.Errors)
+        //            {
+        //                errors.Add(err.ErrorMessage);
+        //            }
+        //        }
+        //        string errorsStr = string.Join("\n", errors);
+        //        return BadRequest(errorsStr);
+        //    }
+        //    return Content($"$Person: {person}");
+        //}
+
+        // above code shortened uing LINQ
+        [Route("register")]
+        public IActionResult Register(Person person, [FromHeader( Name = "User-Agent")] string UserAgent)
+        {
+            string errors = string.Join("\n", ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage));
+            if (!ModelState.IsValid) return BadRequest(errors);
+            return Content($"$Person: {person}, {UserAgent}");
+        }
+
+        [Route("register/validatableobjectexample")]
+        public IActionResult RegisterValidatablePerson(ValidatablePerson validatablePerson)
+        {
+            string errors = string.Join("\n", ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage));
+            if (!ModelState.IsValid) return BadRequest(errors);
+            return Content($"$Person: {validatablePerson}");
+        }
+
+        [Route("register/custommodelbinderexample")]
+        // if you use the CustomPersonModelBinderProvider you can remove [ModelBinder(BinderType = typeof(CustomModelBinderPerson))]
+        //public IActionResult RegisterCustomModelBinderPerson([ModelBinder(BinderType = typeof(CustomPersonModelBinder))] Person person)
+        public IActionResult RegisterCustomModelBinderPerson(Person person)
+        {
+            string errors = string.Join("\n", ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage));
+            if (!ModelState.IsValid) return BadRequest(errors);
+            return Content($"$Person: {person}");
+        }
+
+        [Route("register/frombodyexample")]
+        //[FromBody] enables the input fromatters to read data from the request body (json, xml or custom only)
+        public IActionResult ReadFromBody([FromBody] Person person)
+        {
+            string errors = string.Join("\n", ModelState.Values.SelectMany(value => value.Errors).Select(err => err.ErrorMessage));
+            if (!ModelState.IsValid) return BadRequest(errors);
+            return Content($"$Person: {person}");
+        }
+
+
+
     }
 }
