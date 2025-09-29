@@ -12,14 +12,78 @@ namespace MemeryBank.Api.Controllers
     //[Controller]
     public class HomeController : Controller
     {
+        //[Route("home")]
+        //[Route("/")]
+        //Return type should be IActionResult ... this is just for learning the concepts
+        //public ContentResult Index()
+        //{
+        //    return Content("Hello World! Index (Method 1)", "text/plain");
+        //    //with controller base class we would need the following instead
+        //    //return new ContentResult() { Content = "Hello World! Index (Method 1)", ContentType = "text/plain" };
+        //}
+
         [Route("home")]
         [Route("/")]
-        //Return type should be IActionResult ... this is just for learning the concepts
-        public ContentResult Index()
+        public IActionResult Index()
         {
-            return Content("Hello World! Index (Method 1)", "text/plain");
+            ViewData["appTitle"] = "Memery Bank";
+            ViewData["pageName"] = "Home Page";
+            List<Person> people = [
+                new Person { FirstName = "doodles", LastName = "de brito pimentel", DateOfBirth = new DateTime(1991, 5, 16)},
+                new Person { FirstName = "ifazihna", LastName = "mullally pimentel",DateOfBirth = null}, //DateOfBirth = new DateTime(2023, 3, 09)},
+                new Person { FirstName = "dave", LastName = "mullally", DateOfBirth = new DateTime(1991, 5, 16)},
+                new Person { FirstName = "aoife", LastName = "mullally pimentel", DateOfBirth = null},//DateOfBirth = new DateTime(2023, 3, 09)},
+                new Person { FirstName = "duda", LastName = "de brito pimentel",DateOfBirth = null} //DateOfBirth = null}
+            ];
+            //ViewData["people"] = people;
+            //ViewBag.people = people;
+            return View("Index", people); //if you dont specify a name it will be Index.cshtml
+            //if Index.cshtml is not found in the Views/Home folder Views/Shared/Index.cshtml will be used if it exists. 
+            //return View("abc"); //here it will be abc.cshtml
+
+            //return new ViewResult() { ViewName ="abc"};
+            //return View();
+            //return Content("Hello World! Index (Method 1)", "text/plain");
             //with controller base class we would need the following instead
             //return new ContentResult() { Content = "Hello World! Index (Method 1)", ContentType = "text/plain" };
+        }
+
+        [Route("person-details/{name}")]
+        public IActionResult PersonDeatils(string? name)
+        {
+            ViewData["appTitle"] = "Memery Bank";
+            ViewData["pageName"] = "Person Details";
+            if (name == null)
+            {
+                return Content("You must supply the persons name");
+            } else
+            {
+                List<Person> people = [
+                new Person { FirstName = "doodles", LastName = "de brito pimentel", DateOfBirth = new DateTime(1991, 5, 16)},
+                new Person { FirstName = "ifazihna", LastName = "mullally pimentel",DateOfBirth = null}, //DateOfBirth = new DateTime(2023, 3, 09)},
+                new Person { FirstName = "dave", LastName = "mullally", DateOfBirth = new DateTime(1991, 5, 16)},
+                new Person { FirstName = "aoife", LastName = "mullally pimentel", DateOfBirth = null},//DateOfBirth = new DateTime(2023, 3, 09)},
+                new Person { FirstName = "duda", LastName = "de brito pimentel",DateOfBirth = null}, //DateOfBirth = null}
+                new Person { FirstName = "dengo", LastName = "mullally", DateOfBirth = new DateTime(1985, 1, 7)},
+            ];
+                Person? matchingPerson = people.Where(temp => temp.FirstName == name).FirstOrDefault();
+                if(matchingPerson == null)
+                {
+                    return Content($"Could  not find {name}");
+                }
+                //adding the view name is only necessary if you want its name to be different from that of the coresponding action method 
+                return View("PersonDetails", matchingPerson);
+            }
+            
+        }
+
+        [Route("person-with-product")]
+        public IActionResult PersonWithProduct()
+        {
+            PersonAndProductWrapper productAndPerson = new() { PersonData = new Person { FirstName = "dengo", LastName = "mullally" }, ProductData = new Product { Id = 10, Name = "Laptop" } };
+            ViewData["appTitle"] = "Memery Bank";
+            ViewData["pageName"] = "Person With Product";
+            return View(productAndPerson);
         }
 
         [Route("about")]

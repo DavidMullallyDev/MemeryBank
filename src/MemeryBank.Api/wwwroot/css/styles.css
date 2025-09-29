@@ -1,0 +1,52 @@
+﻿/* 🌐 Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+/* 🔹 Header + Navigation */
+header {
+    background: #1e3a8a; /* dark blue */
+    color: white;
+    padding: 1rem 2rem;
+}
+
+    header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.2s ease-in;
+    }
+
+        nav a:hover {
+            color: #fbbf24; /* amber on hover */
+        }
+
+/* 🔹 Main*/
+

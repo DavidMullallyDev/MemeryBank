@@ -1,0 +1,163 @@
+﻿@using MemeryBank.Core.Shared.Compoments.Pages;
+@using static MemeryBank.Api.Models.Person
+@* This makes this a strongly typed view as is it now strongly coupled with the List<Person> class *@
+@model List<Person>
+@{
+    // string appTitle = "Mememry Bank";
+    Person person = new Person();
+    person.FirstName = "dengo";
+    person.LastName = "mullally";
+    //person.DateOfBirth = null;
+    person.DateOfBirth = new DateTime(1985, 1, 7);
+    //person.PersonGender = Gender.Other;
+    // List<Person> peoples = [
+    //     new Person { FirstName = "doodles", LastName = "de brito pimentel", DateOfBirth = new DateTime(1991, 5, 17)},
+    //     new Person { FirstName = "ifazihna", LastName = "mullally pimentel", DateOfBirth = new DateTime(2023, 3, 09)},
+    //     new Person { FirstName = "dave", LastName = "mullally", DateOfBirth = new DateTime(1991, 5, 17)},
+    //     new Person { FirstName = "aoife", LastName = "mullally pimentel", DateOfBirth = new DateTime(2023, 3, 09)},
+    //     new Person { FirstName = "duda", LastName = "de brito pimentel", DateOfBirth = new DateTime(1991, 5, 17)}
+    // ];
+
+
+    // local function.. can be reused within this view
+    string? GetAge(DateTime? dateOfBirth)
+    {
+        DateTime today = DateTime.Today;
+        if (dateOfBirth.HasValue && dateOfBirth != DateTime.MinValue)
+        {
+            Person.Age = today.Year - dateOfBirth.Value.Year;
+            if (today < dateOfBirth.Value.AddYears(Person.Age))
+            {
+                Person.Age--; // hasn't had birthday yet this year
+            }
+            return $"is {Person.Age} years old";
+        }
+        return "is of unspecified age";
+    }
+}
+
+
+@functions {
+    Person Person { get; set; } = new Person { FirstName = "abc", LastName = "def", DateOfBirth = new DateTime(1991, 5, 17) };
+    static List<Person> peoples = [
+        new Person { FirstName = "doodles", LastName = "de brito pimentel", DateOfBirth = new DateTime(1991, 5, 17)},
+        new Person { FirstName = "ifazihna", LastName = "mullally pimentel", DateOfBirth = new DateTime(2023, 3, 09)},
+        new Person { FirstName = "dave", LastName = "mullally", DateOfBirth = new DateTime(1991, 5, 17)},
+        new Person { FirstName = "aoife", LastName = "mullally pimentel", DateOfBirth = new DateTime(2023, 3, 09)},
+        new Person { FirstName = "duda", LastName = "de brito pimentel", DateOfBirth = new DateTime(1991, 5, 17)}
+    ];
+    string alertMessage = $"<script>alert('{peoples.Count} people were found')</script>";
+    // here you can create methods and properties but they will only be accesible from within this view
+    string? GetAgeMethod(DateTime? dateOfBirth)
+    {
+        DateTime today = DateTime.Today;
+        if (dateOfBirth.HasValue && dateOfBirth != DateTime.MinValue)
+        {
+            Person.Age = today.Year - dateOfBirth.Value.Year;
+            if (today < dateOfBirth.Value.AddYears(Person.Age))
+            {
+                Person.Age--; // hasn't had birthday yet this year
+            }
+            return $"is {Person.Age} years old";
+        }
+        return "is of unspecified age";
+    }
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.appTitle - @ViewBag.pageName</title>
+    @* <title>@ViewData["appTitle"]</title> *@
+    <meta name="description" content="Welcome to my homepage!">
+    <link rel="stylesheet" href="~/css/styles.css"/> <!-- External CSS file -->
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>@ViewData["appTitle"]</h1>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Projects</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="hero">
+            @{
+                //before ViewBag was introduced you had to acces the data by casting it
+                //List<Person>? people = (List<Person>)ViewData["people"]!;
+            }
+            <ol>
+                <li>@person.FirstName @person.LastName born @person.DateOfBirth @GetAge(person.DateOfBirth)</li>
+                <li>@Person.FirstName @Person.LastName born @Person.DateOfBirth @GetAge(Person.DateOfBirth)</li>
+                @* @foreach (Person per in ViewBag.people) *@
+                @* the List<Person> model has been bound to the view using @Model List<Oerson> *@
+                @foreach(Person per in Model)
+                {
+                    @: This is an example of static text 
+                    <text> This is another example of static text</text>
+                    @*or you could just put the text in any html tag*@
+                    <li>@per.FirstName @per.LastName born @per.DateOfBirth @GetAge(per.DateOfBirth) <a href="/person-details/@per.FirstName">Details</a> <a href="/person-with-product">With Product</a></li>
+                }
+            </ol>
+            @*show the script as sanitized text*@
+            @alertMessage
+            @*run the script*@
+            @Html.Raw(alertMessage)
+           
+            <ul>
+                <li>@person.FirstName @person.LastName born @person.DateOfBirth @GetAge(person.DateOfBirth)</li>
+                <li>@Person.FirstName @Person.LastName born @Person.DateOfBirth @GetAge(Person.DateOfBirth)</li>
+                @for (int i = 0; i < 2; i++)
+                {
+                    Person pers =  Model[i];
+                    <li>@pers.FirstName @pers.LastName born @pers.DateOfBirth  @GetAge(pers.DateOfBirth)</li>
+                }
+            </ul>
+            
+            @* @if(GetAge(person.DateOfBirth).HasValue)
+            {
+
+                <h2>Your are @GetAge(person.DateOfBirth) years old.</h2>
+            } else
+            {
+                <h2>Your date of birth is unknown</h2>
+            } *@
+            @switch (person.PersonGender)
+            {
+                case Gender.Male:<h2> Hey ya bollox</h2>; break;
+                case Gender.Female:<h2> Hey ya sandy vajayjay</h2>; break;
+                case Gender.Other:<h2> Hey ya sandy bollox</h2>; break;
+                default:<h2>Hey you ??</h2>; break;
+            }
+            <p>This is a simple boilerplate for an HTML5 homepage.</p>
+            <a href="#projects">See My Work</a>
+        </section>
+
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Write a little introduction here...</p>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <p>Showcase your cool work here...</p>
+        </section>
+        @{
+            <component type="typeof(MemeCard)" render-mode="ServerPrerendered"
+                       param-Message="Hello from MVC View!" />
+        }
+    </main>
+    <component type="typeof(MemeCard)" render-mode="ServerPrerendered" />
+    <footer>
+        <p>&copy; 2025 My Website. All rights reserved.</p>
+    </footer>
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

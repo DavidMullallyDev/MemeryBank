@@ -6,6 +6,10 @@ namespace MemeryBank.Api.Models
 {
     public class Person
     {
+        public enum Gender
+        {
+            Male, Female, Other
+        }
         [Required]
         public Guid? Id { get; set; }
         //can replace default error message with a custom error meaasage
@@ -25,7 +29,7 @@ namespace MemeryBank.Api.Models
         public string? UserName { get; set; }
         [Required]
         [MinimumAgeValidationAttribute(18, ErrorMessage = "Users must be over {0} years of age!!")]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         [Required]
         [EmailAddress]
         public string? Email { get; set; }
@@ -46,7 +50,8 @@ namespace MemeryBank.Api.Models
         public DateTime? FromDate { get; set; }
         [IsValidToFromDateRangeValidationAttribute("FromDate", ErrorMessage = "'To Date' cannot be before 'From Date'")]
         public DateTime? ToDate { get; set; }
-
+         public int Age { get; set; }
+        public Gender? PersonGender { get; set; }
         public List<string?> Tags { get; set; } = [];
         public override string ToString()
         {

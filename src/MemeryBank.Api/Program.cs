@@ -8,10 +8,13 @@ using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
 // Modelbinders will be executed in the order they are in thats why i inserted this at 0
-builder.Services.AddControllers(options =>
+builder.Services.AddControllersWithViews(options =>
 {
    // options.ModelBinderProviders.Insert(0, new CustomPersonModelBinderProvider()); //if you want to use custom model binders
-}).AddXmlSerializerFormatters(); // if you want to be able to read xml from the request body
+}).AddXmlSerializerFormatters();
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor();
+// if you want to be able to read xml from the request body
 //// If you want to use a folder other that wwwroot for static files 
 //// wwwroot folder must still exist though
 // var builder = WebApplication.CreateBuilder(WebApplIcationOptions()
@@ -31,6 +34,8 @@ builder.Services.AddRouting(options =>
 builder.Services.AddControllers();
 var app = builder.Build();
 app.MapControllers();
+app.MapRazorPages();
+app.MapBlazorHub();
 
 //(introduced in asp.net core 6) Routing is automatically enabled
 //no need for app.UseRouting anymore
