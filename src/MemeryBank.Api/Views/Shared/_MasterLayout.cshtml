@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.appTitle</title>
+    <link rel="stylesheet" href="~/css/styles.css" />
+</head>
+<body>
+    <div class="container">Example of nested Layouts</div>
+    <div class="body">
+        @RenderBody()
+    </div>
+    @* <div class="footer-content">
+        @RenderSection("footer_section", false)
+    </div> *@
+</body>
+</html>

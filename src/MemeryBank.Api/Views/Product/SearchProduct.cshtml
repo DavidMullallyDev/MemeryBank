@@ -1,0 +1,7 @@
+﻿@model Person
+@* <h1>@Model.FirstName @Model.LastName</h1> *@
+@{
+    if (ViewBag.ProductId != null) Layout = "~/Views/Shared/_ProductLayout.cshtml";
+}
+<h1>Search Product Page</h1>
+<a href="/home">back</a>

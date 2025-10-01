@@ -1,0 +1,12 @@
+﻿@model Person
+@* <h1>@Model.FirstName @Model.LastName</h1> *@
+<h1>About Page</h1>
+<a href="/home">back</a>
+@await Component.InvokeAsync("Grid")
+<div class="page-content">
+    @{
+        ItemList itemList = new ItemList() { ListTitle = "Programming Languages", ListItems = new List<string> { "C#", "Javascript", "typescript", "Python" }, IsOrderedList = true };
+        await Html.RenderPartialAsync("_ListPartialView", itemList);
+    }
+</div>
+

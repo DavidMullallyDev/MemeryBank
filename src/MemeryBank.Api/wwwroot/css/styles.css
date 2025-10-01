@@ -1,52 +1,339 @@
-﻿/* 🌐 Global Reset */
+﻿﻿body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18px;
+    background-color: #f7f7f7;
+    max-height: 100vh;
+}
+
 * {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f9f9f9;
+/*.container {
+    min-width: 500px;
+}*/
+
+.h1{
+    background-color: red;
 }
 
-/* 🔹 Header + Navigation */
-header {
-    background: #1e3a8a; /* dark blue */
-    color: white;
-    padding: 1rem 2rem;
+.navbar-window{
+    width: 400px;
+    height: 400px;
+    position: absolute;
+    top: 100px;
+    right: 20px;
+    background: grey;
+    border: solid,2px,black; 
+}
+.button {
+    background-color: #4CAF50; /* Green */
+    color: white; /* Text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Space inside */
+    font-size: 16px; /* Text size */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s ease;
 }
 
-    header h1 {
-        margin: 0;
-        font-size: 1.8rem;
+    .button:hover {
+        background-color: #45a049; /* Darker green on hover */
     }
 
-nav {
+.programming-languages-content {
+    background-color: red;
+    min-width: 50px;
+    min-height: 50px;
+}
+.navbar {
+    background-color: black;
+    padding: 10px;
+    box-shadow: 0px 1px 2px 2px #cacaca;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    width: 100%;
 }
 
-    nav ul {
-        list-style: none;
-        display: flex;
-        gap: 1.5rem;
+.navbar-brand {
+    margin: 0px 30px 5px 5px;
+    font-size: 1.1em;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: white;
+    width: 40%;
+    text-align: left;
+    text-decoration: none;
+}
+
+.navbar > ul {
+    list-style-type: none;
+    width: 60%;
+    text-align: right;
+}
+
+    .navbar > ul > li {
+        width: 100%;
     }
 
-    nav a {
-        color: white;
-        text-decoration: none;
-        font-weight: bold;
-        transition: color 0.2s ease-in;
-    }
-
-        nav a:hover {
-            color: #fbbf24; /* amber on hover */
+        .navbar > ul > li > a:link, .navbar > ul > li > a:visited {
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.4s;
+            display: inline-block;
+            margin: 0px 3px;
+            color: #1383a4;
+            text-decoration: none;
         }
 
-/* 🔹 Main*/
+        .navbar > ul > li > a:hover {
+            background-color: #ffffff;
+            color: #086581;
+        }
+
+.nav-active {
+    background-color: #ececec;
+}
+
+
+.sidebar {
+    background-image: url("/backgrounds/sidebarBackground.jpg");
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    object-fit: cover;
+    height: 100vh;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5); /* semi-transparent */
+    z-index: 10; /* sits above most content */
+    box-shadow: inset 10px 10px 10px rgba(0,0,0,0.3), inset -3px -3px 6px rgba(255,255,255,0.7);
+}
+
+.sidebar > div > ul {
+    z-index: 20;
+    height: 100%;
+    text-align: center;
+}
+
+    .sidebar > div > ul > li{
+        margin-top: 50px;
+    }
+
+    .sidebar > div > ul > li > a {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        background-color: #2563eb; /* blue */
+        color: white;
+        text-decoration: none; /* remove underline */
+        border-radius: 6px; /* rounded corners */
+        font-weight: bold;
+        transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        min-width: 80%;
+        max-width: 80%;
+    }
+
+    .sidebar > div > ul > li > a:hover {
+        background-color: #1d4ed8; /* darker blue on hover */
+        transform: translateY(-2px);
+    }
+
+    .sidebar > div > ul > li > a:active {
+        background-color: #1e40af; /* even darker when pressed */
+        transform: translateY(0);
+    }
+/*.page-content {
+    padding: 10px;
+    min-height: 90vh;
+}
+
+.full-size-height {
+    min-height: 100vh;
+}
+
+.table {
+    border-collapse: collapse;
+    border: 1px solid #ffffff;
+    padding: 5px;
+    box-shadow: 0px 0px 4px 2px #e4e4e4;
+    margin: 10px 0px;
+    margin: auto;
+}
+
+    .table thead {
+        background-color: #727774;
+        color: #ffffff;
+    }
+
+        .table thead th {
+            padding: 5px 10px;
+            text-align: left;
+        }
+
+    .table tbody td {
+        padding: 6px 10px;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.4s, color 0.3s;
+        background-color: #efefef;
+        border-bottom: 1px solid #ffffff;
+    }
+
+        .table tbody tr:hover {
+            background-color: #01759d;
+            color: #ffffff;
+        }
+
+.w-25 {
+    width: 25%;
+}
+
+.w-50 {
+    width: 50%;
+}
+
+.w-75 {
+    width: 75%;
+}
+
+.w-90 {
+    width: 90%;
+}*/
+.w-100 {
+    width: 100%;
+}
+
+.h-100{
+    height: 100%;
+}
+/*.text-green {
+    color: #0a8438;
+}
+
+.text-red {
+    color: #ff0000;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.margin-auto {
+    margin: auto;
+}
+
+.float-left {
+    float: left;
+}
+
+.clear {
+    clear: both;
+}
+*/
+.blue-back {
+    background-color: #9ad3f7;
+}
+
+.footer-content {
+    background-color: #bfbfbf;
+    color: #000000;
+    padding: 20px;
+    text-align: center;
+}
+/*
+
+.header {
+    background-color: #055c87;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+}*/
+
+/*.box {
+    margin: 10px 20px;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #d3d1d1;
+    box-shadow: 0px 0px 3px 2px #ffffff;
+}
+}*/
+.flex {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: stretch;
+    align-items: stretch;
+}
+.w-70{
+    width: 70%;
+}
+.text-center{
+    text-align: center;
+}
+.meme-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 70vh;
+    background-color: grey;
+}
+
+.meme-view{
+    width: 100%;
+    max-height: 90%;
+    border-style: groove;
+    border-color: black; 
+    object-fit: cover;
+}
+
+.text-input{
+    background-color:green;
+    min-height: 30%;
+}
+.blue-back{
+    background-color: blue;
+}
+.flex-1{
+    flex: 1;
+}
+
+.flex-3{
+    flex: 3;
+ }
+
+.meme {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media screen and (min-width: 1000px) {
+    .navbar-brand {
+        display: inline-block;
+        margin-bottom: 0px;
+    }
+
+    .navbar > ul {
+        display: inline-block;
+        /*width: auto;*/
+    }
+
+        .navbar > ul > li {
+            display: inline-block;
+            width: auto;
+        }
+}
+
 

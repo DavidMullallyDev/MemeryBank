@@ -1,2 +1,5 @@
 ﻿@* Global imports will be available for all views in the Views folder*@
+@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+@* the follow is need for <vc:viewComponentName></vc:viewComponentName> to work*@
+@addTagHelper "*, MemeryBank.Api" 
 @using MemeryBank.Api.Models

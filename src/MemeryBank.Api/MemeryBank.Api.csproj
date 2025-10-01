@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Controllers\ProductController.cs" />
     <None Include="wwwroot\sample-1.txt" />
   </ItemGroup>
 
@@ -19,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ServiceContracts\ServiceContracts.csproj" />
+    <ProjectReference Include="..\..\Services\Services.csproj" />
     <ProjectReference Include="..\MemeryBank.Core.Shared\MemeryBank.Core.Shared.csproj" />
     <ProjectReference Include="..\MemeryBank.Shared\MemeryBank.Shared.csproj" />
   </ItemGroup>

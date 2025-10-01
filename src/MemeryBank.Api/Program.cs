@@ -1,3 +1,5 @@
+using ServiceContracts;
+using Services;
 using MemeryBank.Api.Constraints;
 using MemeryBank.Api.Middleware;
 using MemeryBank.Api.ModelBinders;
@@ -8,6 +10,12 @@ using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
 // Modelbinders will be executed in the order they are in thats why i inserted this at 0
+//builder.services is the IoC container (Inversion of Control container) aka DI container (Dependany Injection) --> relevant for dependancy injection
+builder.Services.Add(new ServiceDescriptor(
+    typeof(ICitiesService),
+    typeof(CitiesService),
+    ServiceLifetime.Transient
+    ));
 builder.Services.AddControllersWithViews(options =>
 {
    // options.ModelBinderProviders.Insert(0, new CustomPersonModelBinderProvider()); //if you want to use custom model binders

@@ -1,0 +1,22 @@
+﻿@{
+    Layout = "~/Views/Shared/_MasterLayout.cshtml";
+}
+@{
+  await Html.RenderPartialAsync("_NavBarPartial");
+}
+<div class="flex h-100">
+    <div class="flex-1 sidebar">
+        <div class="overlay">
+            @{
+                await Html.RenderPartialAsync("_SideBarPartial");
+            }
+        </div>
+    </div>
+    <div class="flex-3">
+        @RenderBody()
+    </div>
+</div>
+<div class="footer-content">
+    @RenderSection("footer_section", false)
+</div>
+

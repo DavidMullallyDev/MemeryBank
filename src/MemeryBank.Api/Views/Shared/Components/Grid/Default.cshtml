@@ -1,0 +1,31 @@
+﻿@model List<Person>
+@{
+    ViewBag.appTitle = "view component";
+}
+<h1>@ViewBag.GridTitle</h1>
+@if(Model != null)
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Sl. No</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Person person in Model)
+            {
+                <tr>
+                    <td>@person.FirstName</td>
+                    <td>@person.LastName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+} else
+{
+    <div style="background-color:grey; height: 200px; width: 500px; display: flex; align-items: center ">
+        <h1>There is no info to be displayed</h1>
+    </div> 
+}
+

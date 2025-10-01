@@ -1,0 +1,54 @@
+﻿@* @using MemeryBank.Api.Models
+@model ItemList
+<div class="list-container">
+    @{
+        ViewData["ListTitle"] = "Updated"; // the change will only be reflected in the partial view as the partial view only recieves a copy of the ViewBag/ViewData
+    }
+    <h3>@Model.ListTitle</h3>
+        @if(Model.ListItems != null)
+        {
+            if (Model.IsOrderedList == true)
+            {
+                <ol class="list">
+                    @Html.Raw(@GetListItems())
+                </ol>
+            } else
+            {
+                <ul class="list">
+                @Html.Raw(@GetListItems())
+                </ul>
+            }  
+        } 
+
+    @functions{
+        string? GetListItems()
+        {
+
+            @if (Model.ListItems != null)
+            {
+                string? listItemsStr = "";
+                @foreach (string item in Model.ListItems)
+                {
+                    listItemsStr += $"<li>{item}</li>";
+                }
+                return listItemsStr;
+            }
+            return "";
+        }
+
+        }
+</div>
+ *@
+
+@model ItemList
+<div>
+    <h3>@Model.ListTitle</h3>
+    <ul>
+        @if(Model.ListItems != null){
+            foreach (string item in Model.ListItems)
+            {
+                <li>@item</li>
+            }
+        }    
+    </ul>
+</div>
