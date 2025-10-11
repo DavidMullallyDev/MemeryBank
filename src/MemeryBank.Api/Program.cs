@@ -1,21 +1,47 @@
-using ServiceContracts;
-using Services;
+using Autofac;
+using Autofac.Core;
+using Autofac.Extensions.DependencyInjection;
 using MemeryBank.Api.Constraints;
 using MemeryBank.Api.Middleware;
 using MemeryBank.Api.ModelBinders;
+using MemeryBank.Api.Models;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Primitives;
 using Microsoft.OpenApi.Services;
+using ServiceContracts;
+using Services;
 using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()); //this line replaxes the built in DI container with the Autofac DI container
 // Modelbinders will be executed in the order they are in thats why i inserted this at 0
+//nB an alternative to the built.in DI is autofac https://autofac.readthedocs.io/en/latest/getting-started/index.html
 //builder.services is the IoC container (Inversion of Control container) aka DI container (Dependany Injection) --> relevant for dependancy injection
-builder.Services.Add(new ServiceDescriptor(
-    typeof(ICitiesService),
-    typeof(CitiesService),
-    ServiceLifetime.Transient
-    ));
+//builder.Services.Add(new ServiceDescriptor(
+//    typeof(ICitiesService),
+//    typeof(CitiesService),
+//    ServiceLifetime.Scoped
+//    ));
+// shortcut 
+//builder.Services.AddTransient<ICitiesService, CitiesService>();
+
+
+//following is for when using autofac DI
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    //containerBuilder.RegisterType<CitiesService>().As<ICitiesService>().InstancePerDependency(); //this is autofac equiv of addTransient ..autofac has 5 lifetime options ..built.in has only 3
+    containerBuilder.RegisterType<CitiesService>().As<ICitiesService>().InstancePerLifetimeScope(); //AddScoped()
+    //containerBuilder.RegisterType<CitiesService>().As<ICitiesService>().SingleInstance(); //AddSingleton()
+    //containerBuilder.RegisterType<CitiesService>().As<ICitiesService>().InstancePerOwned(); // specific to autofac 
+    //containerBuilder.RegisterType<CitiesService>().As<ICitiesService>().InstancePerMatchingLifetimeScope(); // soecific to autofac
+});
+
+//// these are for when using built in DI
+//builder.Services.AddScoped<ICitiesService, CitiesService>();
+//builder.Services.AddSingleton<ICitiesService, CitiesService>();
+//builder.Services.AddTransient<ICitiesService, CitiesService>();
+
 builder.Services.AddControllersWithViews(options =>
 {
    // options.ModelBinderProviders.Insert(0, new CustomPersonModelBinderProvider()); //if you want to use custom model binders
@@ -31,7 +57,7 @@ builder.Services.AddServerSideBlazor();
 //})
 
 builder.Services.AddTransient<MyCustomMiddleware>();
-
+builder.Services.AddScoped<StocksService>();
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -40,10 +66,21 @@ builder.Services.AddRouting(options =>
     options.ConstraintMap.Add("months", typeof(MonthsCustomConstraint));
 });
 builder.Services.AddControllers();
+
+//supllies an object of OptionsCall (with "SomeApi" section) as a service
+builder.Services.Configure<OptionsClass>(builder.Configuration.GetSection("SomeApi"));
+builder.Services.AddHttpClient();
+builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+{
+    config.AddJsonFile("customConfig.json", optional: true); //can add  tgird argument "reloadOnChange:true" if you want the app to auto reload whenever you make a change in the json file
+});
 var app = builder.Build();
-app.MapControllers();
+if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
+//if (app.Environment.IsEnvironment("Beta")) app.UseDeveloperExceptionPage(); example you created a custom environment Beta
+
 app.MapRazorPages();
 app.MapBlazorHub();
+
 
 //(introduced in asp.net core 6) Routing is automatically enabled
 //no need for app.UseRouting anymore
@@ -76,7 +113,7 @@ app.UseStaticFiles(); //works with wwwroot by default if theres a webrootpath sp
 //{
 // FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, @"\myWebRoot"))
 //}); works with myWebRoot
-
+app.MapControllers();
 app.Map("memes/{fileName}.{fileExt}", async (context) =>
 {
     string? fileName = $"{context.Request.RouteValues["fileName"]?.ToString()}.{context.Request.RouteValues["fileExt"]?.ToString()}";
@@ -137,7 +174,13 @@ app.Map("cities/{cityid:guid}", async (context) =>
     Guid cityId = Guid.Parse(Convert.ToString(context.Request.RouteValues["cityid"])!);
     await context.Response.WriteAsync($"Welcome to {cityId}");
 });
-    
+
+app.Map("config-example", async (context) =>
+{
+    //await context.Response.WriteAsync(app.Configuration["MyKey"]);
+    //await context.Response.WriteAsync(app.Configuration.GetValue<string>("MyKey"));
+    await context.Response.WriteAsync(app.Configuration.GetValue<int>("x", 10).ToString());
+});
 
 //fallback for any ozjet requests
 app.MapFallback(async (context) =>

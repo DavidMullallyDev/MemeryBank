@@ -1,0 +1,7 @@
+{
+  "MyKey": "MyValue",
+  "SomeApi": {
+    "ClientId": "Client ID from custom config",
+    "ClientSecret": "Client Secret from custom config"
+  }
+}

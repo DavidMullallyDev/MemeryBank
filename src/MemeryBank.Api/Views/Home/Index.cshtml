@@ -1,6 +1,37 @@
 ﻿@model IEnumerable<string> //IEnumerable is the parent class of List and its recommended to ref the Interface here as later you may decide to use a Dictionary instead of a list for example and this way you wont have to change the code here
+@inject ICitiesService citiesServiceInView 
+@* This can be used to inject ANY service .. i.e thats not provided by the controller *@
+<h1>@ViewBag.MyKey</h1>
+<h1>@ViewBag.X</h1>
+<h1>@ViewBag.ClientId</h1>
+<h1>@ViewBag.ClientSecret</h1>
+<h1>@ViewBag.webHostEnvironment</h1>
+<h1>@ViewBag.currentRootPath</h1>
+
+<environment include="Staging, Production">
+    html content here
+</environment>
+<environment include="Development">
+    <div>
+        <button type="button">Migrate Database</button>
+        <button type="button">View Log</button>
+    </div>
+</environment>
+<environment include="Staging, Production">
+    <div>
+        <button type="button">Back up Database</button>
+    </div>
+</environment>
+
+<environment exclude="Development">
+    <h1>some html code here</h1>
+</environment>
 
 <div class="body">
+    <h1>@ViewBag.ServiceInstanceId</h1>@* *@
+    <h1>@ViewBag.ServiceInstanceId1</h1>
+    <h1>@ViewBag.ServiceInstanceId2</h1>
+    <h1>@ViewBag.ServiceInstanceIdOfServiceInScope</h1>
     <h1 class="h1">This is the home page!</h1>
     <button data-target="programming-languages" type="button" id="button-load" class="button">Load languages list</button>
     <div class="list programming-languages"></div>
@@ -25,7 +56,16 @@
         new Person() { FirstName = "dave", LastName = "mullally" },
         new Person() { FirstName = "duda", LastName = "de brito pimentel" }
     };
+
+    List<string> cities = citiesServiceInView.GetCities();
 }
+<h1>Cities - Service In View</h1>
+<ul>
+@foreach(string city in cities)
+{
+    <li>@city</li>
+}
+</ul>
 @await Component.InvokeAsync("Grid", people)
 @await Component.InvokeAsync("Grid", people2)
 @* ViewCompnent name minus the suffix*@

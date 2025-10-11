@@ -5,6 +5,13 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+        //"ASPNETCORE_ENVIRONMENT": "Beta" example of a custom env you might creare  (ASP.Net core has 'Development, staging and production ebvironments built in.
+
+        //to set the environment on another machine eg.. staging or production machine 
+        //go to the folder where the project is and run following command 
+        //$Env: ASPNETCORE_Environment = "Staging"
+        //the next command is just to simulate this on dev machine 
+        //dontnet run --no-laúnch-profile
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5019"
