@@ -14,13 +14,32 @@ namespace ServiceContracts.DTO
     {
         public Guid CountryId { get; set; }
         public string? CountryName { get; set; } 
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || obj.GetType() != typeof(CountryResponse)) return false;
+
+            CountryResponse country_to_compare = (CountryResponse)obj;
+            // return this.CountryId == country_to_compare.CountryId && this.CountryName == country_to_compare.CountryName;
+            return CountryId == country_to_compare.CountryId && CountryName == country_to_compare.CountryName;
+        }
+
+        //when overiding Equals method it is also necessary to override the GetHashCode method when using the CountryResponse in a Dictionary 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 
-    public static class CountryExtensions()
+    public static class CountryExtensions
     {
         public static CountryResponse ToCountryResponse(this Country country)
         {
-
+            return new CountryResponse
+            {
+                CountryId = country.CountryId,
+                CountryName = country.CountryName
+            };
         }
     }
 }

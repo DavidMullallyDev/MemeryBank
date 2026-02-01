@@ -8,6 +8,7 @@ namespace MemeryBank.Api.ViewComponents
     public class GridViewComponent : ViewComponent
     {
         //every viewcomponent must have this method
+        //public async Task<IViewComponentResult> InvokeAsync(List<Person>? people)
         public async Task<IViewComponentResult> InvokeAsync(List<Person>? people)
         {
             //List<Person> people = new List<Person>() { new() { FirstName = "dengo", LastName = "mullally" }, new() {FirstName="doodles", LastName="de brito pimentel" } };
