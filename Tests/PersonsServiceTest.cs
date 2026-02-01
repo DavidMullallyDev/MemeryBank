@@ -1,9 +1,9 @@
 ﻿using ServiceContracts;
-using Xunit;
-using Entities;
 using ServiceContracts.DTO;
 using Services;
 using ServiceContracts.Enums;
+using Xunit.Abstractions;
+using Entities;
 
 namespace Tests
 {
@@ -12,12 +12,14 @@ namespace Tests
         //Private fields
         private readonly IPersonService _personService;
         private readonly ICountriesService _countriesService;
+        private readonly ITestOutputHelper _outputHelper;
 
         //Constructor
-        public PersonsServiceTest() 
+        public PersonsServiceTest(ITestOutputHelper testOutputHelper) 
         {
             _personService = new PersonsService();
             _countriesService = new CountriesService();
+            _outputHelper = testOutputHelper;
         }
 
         #region GetPersonById
@@ -134,6 +136,149 @@ namespace Tests
             Assert.True(person_response_from_add.Id != Guid.Empty);
 
             Assert.Contains(person_response_from_add, allPersons);
+        }
+        #endregion
+
+        #region GetAllPersons
+        /// <summary>
+        /// Should return an empty list by default
+        /// </summary>
+        [Fact]
+        public void GetAllPersons_Empty()
+        {
+            Assert.Empty(_personService.GetPersonList());
+        }
+
+        /// <summary>
+        /// When a null value is supplied instead of an id, it should return null
+        /// </summary>
+        [Fact]
+        public void GetAllPersons_AllPersons()
+        {
+            //Arrange
+
+            List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
+
+            List<PersonResponse> persons_response_from_add = [];
+            foreach(PersonAddRequest personAddRequest in personAddRequests)
+            {
+                persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
+            }
+
+            _outputHelper.WriteLine("Expected:");
+            //print persons_response_from_add
+            foreach (PersonResponse person_response_from_add in persons_response_from_add)
+            {
+                _outputHelper.WriteLine(person_response_from_add.ToString());
+            };
+
+            _outputHelper.WriteLine("Actual:");
+            //Act
+            List<PersonResponse> persons_response_from_get = _personService.GetPersonList();
+            //print persons_response_from_get
+            foreach (PersonResponse person_response_from_get in persons_response_from_get)
+            {
+                _outputHelper.WriteLine(person_response_from_get.ToString());
+            };
+
+            //Assert
+            Assert.Equal(persons_response_from_get, persons_response_from_add);
+        }
+        #endregion
+
+        #region GetFilteredPersons
+        /// <summary>
+        /// When field is Name and search str is empty, it should return all persons
+        /// </summary>
+        /// 
+        [Fact]
+        public void GetFilteredPersons_EmptySearchText()
+        {
+            //Arrange
+            List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
+
+            //Act
+            List<PersonResponse> persons_response_from_add = new List<PersonResponse>();
+            foreach (PersonAddRequest personAddRequest in personAddRequests)
+            {
+                persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
+            }
+
+            _outputHelper.WriteLine("Expected:");
+            //print persons_response_from_add
+            foreach (PersonResponse person_response_from_add in persons_response_from_add)
+            {
+                _outputHelper.WriteLine(person_response_from_add.ToString());
+            }
+            ;
+
+            _outputHelper.WriteLine("Actual:");
+            //Act
+            List<PersonResponse> filtered_persons_response_from_search = _personService.GetFilteredPersons(nameof(Person.Name), "");
+            //print persons_response_from_get
+            foreach (PersonResponse filtered_person_response_from_search in filtered_persons_response_from_search)
+            {
+                _outputHelper.WriteLine(filtered_person_response_from_search.ToString());
+            }
+            ;
+
+            //Assert
+            foreach(PersonResponse person_response_from_add in persons_response_from_add)
+            {
+                Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+            }   
+        }
+
+        /// <summary>
+        /// When field is Name and search str has value it should return all persons who match
+        /// </summary>
+        /// 
+        [Fact]
+        public void GetFilteredPersons_TextSearchByName()
+        {
+            string searchText = "d";
+            //Arrange
+            List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
+
+            List<PersonResponse> persons_response_from_add = [];
+            foreach (PersonAddRequest personAddRequest in personAddRequests)
+            {
+                persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
+            }
+
+            List<PersonResponse> filtered_persons_response_from_add = [];
+            _outputHelper.WriteLine("Expected:");
+            //print persons_response_from_add
+            foreach (PersonResponse person_response_from_add in persons_response_from_add)
+            {
+                if (person_response_from_add.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                {
+                    filtered_persons_response_from_add.Add(person_response_from_add);
+                    _outputHelper.WriteLine(person_response_from_add.ToString());
+                }
+            };
+
+            _outputHelper.WriteLine("Actual:");
+            //Act
+            List<PersonResponse>? filtered_persons_response_from_search = _personService.GetFilteredPersons(nameof(Person.Name), searchText);
+            //print persons_response_from_get
+            foreach (PersonResponse filtered_person_response_from_search in filtered_persons_response_from_search)
+            {
+                _outputHelper.WriteLine(filtered_person_response_from_search.ToString());
+            }
+            ;
+
+            //Assert
+            foreach (PersonResponse person_response_from_add in filtered_persons_response_from_add)
+            {
+                if(person_response_from_add.Name != null)
+                {
+                    if (person_response_from_add.Name.Contains("da", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+                    }
+                } 
+            }
         }
         #endregion
     }

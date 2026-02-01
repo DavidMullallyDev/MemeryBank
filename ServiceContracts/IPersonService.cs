@@ -25,5 +25,15 @@ namespace ServiceContracts
         /// </summary>
         /// <returns>Returns a list of objects of PersonResponse type</returns>
         List<PersonResponse> GetPersonList();
+
+        /// <summary>
+        /// Returns all persons whose name contain the search string provided
+        /// </summary>
+        /// <param name="searchBy">Which field to search</param>
+        /// <param name="searchStr">the value to search for</param>
+        /// <returns>Returns a list of objects of PersonResponse type matching the serach str</returns>
+        List<PersonResponse>? GetFilteredPersons(string searchBy, string? searchStr);
+
+        List<PersonAddRequest> AddSomeMockData();
     }
 }

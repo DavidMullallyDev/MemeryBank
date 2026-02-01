@@ -1,7 +1,5 @@
-﻿
-using Entities;
+﻿using Entities;
 using ServiceContracts.DTO;
-using System.Runtime.CompilerServices;
 
 namespace ServiceContracts.DTO
 {
@@ -50,14 +48,19 @@ namespace ServiceContracts.DTO
             return base.GetHashCode();
         }
 
-        /// <summary>
-        /// An extenison method to convert of object of Person class into PersonResponse class
-        /// </summary>
-        /// <param name="person">The Person object to convertt</param>
-        /// <returns>Returns the converted PersonREsponseObject</returns>
+        public override string ToString()
+        {
+            return $"{Id}; {Name}; {Email}; {Dob}; {Gender}; {CountryId}; {Address}; {RecieveNewsletters}";
+        }
     }
 }
 
+/// <summary>
+/// An extenison method to convert of object of Person class into PersonResponse class
+/// </summary>
+/// <param name="person">The Person object to convertt</param>
+/// <returns>Returns the converted PersonREsponseObject</returns>
+/// 
 public static class PersonExtensions
 {
     public static PersonResponse ToPersonResponse(this Person person)

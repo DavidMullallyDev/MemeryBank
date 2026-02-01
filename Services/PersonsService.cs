@@ -1,7 +1,7 @@
 ﻿using Entities;
-using ServiceContracts.DTO;
 using ServiceContracts;
-using System.ComponentModel.DataAnnotations;
+using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 using Services.Helpers;
 
 
@@ -11,18 +11,18 @@ namespace Services
     {
         //Private field
         private readonly List<Person> _persons;
-        private readonly CountriesService _countryService;
+        private readonly CountriesService _countriesService;
 
         public PersonsService()
         {
             _persons = [];
-            _countryService = new CountriesService();
+            _countriesService = new CountriesService();
         }
 
         private PersonResponse ConvertPersonToPersonResponse(Person person)
         {
             PersonResponse personResponse = person.ToPersonResponse();
-            personResponse.Country = _countryService.GetCountryByID(personResponse.CountryId)?.CountryName;
+            personResponse.Country = _countriesService.GetCountryByID(personResponse.CountryId)?.CountryName;
 
             return personResponse;
         }
@@ -52,13 +52,73 @@ namespace Services
 
         public List<PersonResponse> GetPersonList()
         {
-            throw new NotImplementedException("PersonName is required");
+            return _persons.Select(p => p.ToPersonResponse()).ToList();
         }
 
         public PersonResponse? GetPersonByID(Guid? Id)
         {
             PersonResponse? personResponse = _persons.FirstOrDefault(p => p.Id.Equals(Id))?.ToPersonResponse();
             return personResponse ?? null;
+        }
+
+        public List<PersonResponse>? GetFilteredPersons(string searchBy, string? searchStr)
+        {
+            if (searchBy == null || string.IsNullOrEmpty(searchStr)) return GetPersonList();
+
+            if (searchBy.Equals("Name")) return [.. GetPersonList().Where(p => p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase))];
+
+            throw new NotImplementedException();
+        }
+
+        public List<PersonAddRequest> AddSomeMockData()
+        {
+            CountryResponse? countryResponse = _countriesService.AddCountry(new CountryAddRequest() { CountryName = "Ireland" });
+            Guid? countryId = _countriesService.GetCountryByID(countryResponse.CountryId)?.CountryId;
+            List<PersonAddRequest> personAddRequests =
+            [
+                new PersonAddRequest()
+                {
+                    Address = "TestStr",
+                    CountryId = countryId,
+                    Dob = new DateTime(2000,1,1),
+                    Email = "123@456.com",
+                    Gender = GenderOptions.Female,
+                    Name = "Dave",
+                    RecieveNewsletters = true
+                },
+                new PersonAddRequest()
+                {
+                    Address = "TestStr2",
+                    CountryId = countryId,
+                    Dob = new DateTime(2000,1,1),
+                    Email = "123@456.com",
+                    Gender = GenderOptions.Female,
+                    Name = "Duda",
+                    RecieveNewsletters = true
+                },
+                new PersonAddRequest()
+                {
+                    Address = "TestStr",
+                    CountryId = countryId,
+                    Dob = new DateTime(2000,1,1),
+                    Email = "123@456.com",
+                    Gender = GenderOptions.Female,
+                    Name = "Aoife",
+                    RecieveNewsletters = true
+                },
+                 new PersonAddRequest()
+                {
+                    Address = "TestStr",
+                    CountryId = countryId,
+                    Dob = new DateTime(2000,1,1),
+                    Email = "123@456.com",
+                    Gender = GenderOptions.Female,
+                    Name = "Darragh",
+                    RecieveNewsletters = true
+                }
+            ];
+
+            return personAddRequests;
         }
     }
 }
