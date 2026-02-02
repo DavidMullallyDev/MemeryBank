@@ -198,7 +198,7 @@ namespace Tests
             List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
 
             //Act
-            List<PersonResponse> persons_response_from_add = new List<PersonResponse>();
+            List<PersonResponse> persons_response_from_add = [];
             foreach (PersonAddRequest personAddRequest in personAddRequests)
             {
                 persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
@@ -214,19 +214,21 @@ namespace Tests
 
             _outputHelper.WriteLine("Actual:");
             //Act
-            List<PersonResponse> filtered_persons_response_from_search = _personService.GetFilteredPersons(nameof(Person.Name), "");
+            List<PersonResponse>? filtered_persons_response_from_search = _personService.GetFilteredPersons(nameof(Person.Name), "");
             //print persons_response_from_get
-            foreach (PersonResponse filtered_person_response_from_search in filtered_persons_response_from_search)
+            if(filtered_persons_response_from_search != null)
             {
-                _outputHelper.WriteLine(filtered_person_response_from_search.ToString());
-            }
-            ;
+                foreach (PersonResponse filtered_person_response_from_search in filtered_persons_response_from_search)
+                {
+                    _outputHelper.WriteLine(filtered_person_response_from_search.ToString());
+                }
 
-            //Assert
-            foreach(PersonResponse person_response_from_add in persons_response_from_add)
-            {
-                Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
-            }   
+                //Assert
+                foreach (PersonResponse person_response_from_add in persons_response_from_add)
+                {
+                    Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+                }
+            } 
         }
 
         /// <summary>
@@ -251,7 +253,7 @@ namespace Tests
             //print persons_response_from_add
             foreach (PersonResponse person_response_from_add in persons_response_from_add)
             {
-                if (person_response_from_add.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                if (person_response_from_add.Name != null && person_response_from_add.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
                 {
                     filtered_persons_response_from_add.Add(person_response_from_add);
                     _outputHelper.WriteLine(person_response_from_add.ToString());
@@ -262,12 +264,14 @@ namespace Tests
             //Act
             List<PersonResponse>? filtered_persons_response_from_search = _personService.GetFilteredPersons(nameof(Person.Name), searchText);
             //print persons_response_from_get
-            foreach (PersonResponse filtered_person_response_from_search in filtered_persons_response_from_search)
+            if(filtered_persons_response_from_search != null)
             {
-                _outputHelper.WriteLine(filtered_person_response_from_search.ToString());
+                foreach (PersonResponse filtered_person_response_from_search in filtered_persons_response_from_search)
+                {
+                    _outputHelper.WriteLine(filtered_person_response_from_search.ToString());
+                }
             }
-            ;
-
+            
             //Assert
             foreach (PersonResponse person_response_from_add in filtered_persons_response_from_add)
             {
@@ -275,11 +279,18 @@ namespace Tests
                 {
                     if (person_response_from_add.Name.Contains("da", StringComparison.OrdinalIgnoreCase))
                     {
-                        Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+                        if (filtered_persons_response_from_search != null)
+                        {
+                            Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+                        }
                     }
                 } 
             }
         }
+        #endregion
+
+        #region GetSortedPersons
+
         #endregion
     }
 }

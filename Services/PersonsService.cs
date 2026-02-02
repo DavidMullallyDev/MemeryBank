@@ -65,9 +65,20 @@ namespace Services
         {
             if (searchBy == null || string.IsNullOrEmpty(searchStr)) return GetPersonList();
 
-            if (searchBy.Equals("Name")) return [.. GetPersonList().Where(p => p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase))];
-
-            throw new NotImplementedException();
+            List<PersonResponse> allPersons = [];
+            List<PersonResponse> filteredPersons = [];
+            filteredPersons = searchBy switch
+            {
+                nameof(Person.Name) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Name) || p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+                nameof(Person.Email) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Email) || p.Email.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+                nameof(Person.Dob) => [.. allPersons.Where(p => p.Dob == null || p.Dob.Value.ToString("dd MMMM yyyy").Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+                nameof(Person.Gender) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Gender) || p.Gender.ToString().Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+                nameof(Person.CountryId) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Country) || p.Country.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+                nameof(Person.Address) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Address) || p.Address.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+                _ => allPersons,
+            };
+            ;
+            return filteredPersons;
         }
 
         public List<PersonAddRequest> AddSomeMockData()
