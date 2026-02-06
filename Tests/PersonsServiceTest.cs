@@ -156,22 +156,20 @@ namespace Tests
         public void GetAllPersons_AllPersons()
         {
             //Arrange
-
-            List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
-
-            List<PersonResponse> persons_response_from_add = [];
-            foreach(PersonAddRequest personAddRequest in personAddRequests)
-            {
-                persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
-            }
+            List<PersonResponse>? personResponses = _personService.AddSomeMockData();
 
             _outputHelper.WriteLine("Expected:");
             //print persons_response_from_add
-            foreach (PersonResponse person_response_from_add in persons_response_from_add)
-            {
-                _outputHelper.WriteLine(person_response_from_add.ToString());
-            };
 
+            if(personResponses != null && personResponses.Count > 0)
+            {
+                foreach (PersonResponse person_response_from_add in personResponses)
+                {
+                    _outputHelper.WriteLine(person_response_from_add.ToString());
+                }
+                ;
+            }
+            
             _outputHelper.WriteLine("Actual:");
             //Act
             List<PersonResponse> persons_response_from_get = _personService.GetPersonList();
@@ -182,7 +180,7 @@ namespace Tests
             };
 
             //Assert
-            Assert.Equal(persons_response_from_get, persons_response_from_add);
+            Assert.Equal(persons_response_from_get, personResponses);
         }
         #endregion
 
@@ -195,22 +193,17 @@ namespace Tests
         public void GetFilteredPersons_EmptySearchText()
         {
             //Arrange
-            List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
-
-            //Act
-            List<PersonResponse> persons_response_from_add = [];
-            foreach (PersonAddRequest personAddRequest in personAddRequests)
-            {
-                persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
-            }
+            List<PersonResponse>? persons_response_from_add = _personService.AddSomeMockData();
 
             _outputHelper.WriteLine("Expected:");
             //print persons_response_from_add
-            foreach (PersonResponse person_response_from_add in persons_response_from_add)
+            if(persons_response_from_add != null && persons_response_from_add.Count > 0)
             {
-                _outputHelper.WriteLine(person_response_from_add.ToString());
-            }
-            ;
+                foreach (PersonResponse person_response_from_add in persons_response_from_add)
+                {
+                    _outputHelper.WriteLine(person_response_from_add.ToString());
+                }
+            }  
 
             _outputHelper.WriteLine("Actual:");
             //Act
@@ -224,10 +217,14 @@ namespace Tests
                 }
 
                 //Assert
-                foreach (PersonResponse person_response_from_add in persons_response_from_add)
+                if(persons_response_from_add != null && persons_response_from_add.Count > 0)
                 {
-                    Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+                    foreach (PersonResponse person_response_from_add in persons_response_from_add)
+                    {
+                        Assert.Contains(person_response_from_add, filtered_persons_response_from_search);
+                    }
                 }
+               
             } 
         }
 
@@ -238,29 +235,29 @@ namespace Tests
         [Fact]
         public void GetFilteredPersons_TextSearchByName()
         {
-            string searchText = "d";
+            string searchText = "Ao";
             //Arrange
-            List<PersonAddRequest> personAddRequests = _personService.AddSomeMockData();
-
-            List<PersonResponse> persons_response_from_add = [];
-            foreach (PersonAddRequest personAddRequest in personAddRequests)
-            {
-                persons_response_from_add.Add(_personService.AddPerson(personAddRequest));
-            }
+            List<PersonResponse>? personResponses = _personService.AddSomeMockData();
 
             List<PersonResponse> filtered_persons_response_from_add = [];
+
             _outputHelper.WriteLine("Expected:");
             //print persons_response_from_add
-            foreach (PersonResponse person_response_from_add in persons_response_from_add)
+            if(personResponses != null && personResponses.Count > 0)
             {
-                if (person_response_from_add.Name != null && person_response_from_add.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                foreach (PersonResponse person_response_from_add in personResponses)
                 {
-                    filtered_persons_response_from_add.Add(person_response_from_add);
-                    _outputHelper.WriteLine(person_response_from_add.ToString());
+                    if (person_response_from_add.Name != null && person_response_from_add.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                    {
+                        filtered_persons_response_from_add.Add(person_response_from_add);
+                        _outputHelper.WriteLine(person_response_from_add.ToString());
+                    }
                 }
-            };
-
+                ;
+            }
+           
             _outputHelper.WriteLine("Actual:");
+
             //Act
             List<PersonResponse>? filtered_persons_response_from_search = _personService.GetFilteredPersons(nameof(Person.Name), searchText);
             //print persons_response_from_get
@@ -290,7 +287,39 @@ namespace Tests
         #endregion
 
         #region GetSortedPersons
+        /// <summary>
+        /// When sort by person name in ascending order, it shoul return the list sorted in ascendin godr of name 
+        /// </summary>
+        /// 
+        [Fact]
+        public void GetSortedPersons()
+        {
+            //Arrange
 
+            //Act
+
+            List<PersonResponse> personsResponsesFromAdd = [.. _personService.AddSomeMockData().OrderByDescending(p => p.Name)];
+
+            _outputHelper.WriteLine("Expected:");
+            foreach (PersonResponse sorted_persons_from_add in personsResponsesFromAdd)
+            {
+                _outputHelper.WriteLine(sorted_persons_from_add.ToString());
+            }
+
+            List<PersonResponse> sorted_persons_from_sort = _personService.GetSortedPersons(personsResponsesFromAdd, nameof(Person.Name), SortOrderOptions.DESC);
+
+            _outputHelper.WriteLine("Actual:");
+            foreach (PersonResponse sortedPerson in sorted_persons_from_sort)
+            {
+                _outputHelper.WriteLine(sortedPerson.ToString());
+            }
+
+            //Assert 
+            for(int i = 0; i < personsResponsesFromAdd.Count; i++)
+            {
+                Assert.Equal(personsResponsesFromAdd[i], sorted_persons_from_sort[i]);
+            }
+        }
         #endregion
     }
 }

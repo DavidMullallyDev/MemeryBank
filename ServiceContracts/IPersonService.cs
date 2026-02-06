@@ -1,4 +1,5 @@
 ﻿using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 
 namespace ServiceContracts
 {
@@ -34,6 +35,15 @@ namespace ServiceContracts
         /// <returns>Returns a list of objects of PersonResponse type matching the serach str</returns>
         List<PersonResponse>? GetFilteredPersons(string searchBy, string? searchStr);
 
-        List<PersonAddRequest> AddSomeMockData();
+        /// <summary>
+        /// Returns all persons sorted in eithe asc
+        /// </summary>
+        /// <param name="personsToSort">Represents the list of persons to sort</param>
+        /// <param name="sortBy">Name of the property (key) by which the perosns should be sorted</param>
+        /// <param name="sortOrder">Order in which the persons should be sorted</param>
+        /// <returns>Returns sorted persons as List of PersonResponse</returns>
+        List<PersonResponse> GetSortedPersons(List<PersonResponse> personsToSort, string sortBy, SortOrderOptions sortOrder);
+
+        List<PersonResponse> AddSomeMockData();
     }
 }

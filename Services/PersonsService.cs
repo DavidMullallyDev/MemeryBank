@@ -3,7 +3,7 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services.Helpers;
-
+using System.ComponentModel.Design;
 
 namespace Services
 {
@@ -63,26 +63,74 @@ namespace Services
 
         public List<PersonResponse>? GetFilteredPersons(string searchBy, string? searchStr)
         {
-            if (searchBy == null || string.IsNullOrEmpty(searchStr)) return GetPersonList();
+            if (searchBy == null || string.IsNullOrEmpty(searchStr))
+                return GetPersonList();
 
-            List<PersonResponse> allPersons = [];
-            List<PersonResponse> filteredPersons = [];
-            filteredPersons = searchBy switch
+            List<PersonResponse> allPersons = GetPersonList() ?? [];
+
+            return searchBy switch
             {
-                nameof(Person.Name) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Name) || p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
-                nameof(Person.Email) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Email) || p.Email.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
-                nameof(Person.Dob) => [.. allPersons.Where(p => p.Dob == null || p.Dob.Value.ToString("dd MMMM yyyy").Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
-                nameof(Person.Gender) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Gender) || p.Gender.ToString().Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
-                nameof(Person.CountryId) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Country) || p.Country.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
-                nameof(Person.Address) => [.. allPersons.Where(p => string.IsNullOrEmpty(p.Address) || p.Address.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
-                _ => allPersons,
+                nameof(Person.Name) =>
+                    allPersons.Where(p =>
+                        !string.IsNullOrEmpty(p.Name) &&
+                        p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+
+                nameof(Person.Email) =>
+                    allPersons.Where(p =>
+                        !string.IsNullOrEmpty(p.Email) &&
+                        p.Email.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+
+                nameof(Person.Dob) =>
+                    allPersons.Where(p =>
+                        p.Dob != null &&
+                        p.Dob.Value.ToString("dd MMMM yyyy")
+                            .Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+
+                nameof(Person.Gender) =>
+                    allPersons.Where(p =>
+                        !string.IsNullOrEmpty(p.Gender) &&
+                        p.Gender.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+
+                nameof(Person.CountryId) =>
+                    allPersons.Where(p =>
+                        !string.IsNullOrEmpty(p.Country) &&
+                        p.Country.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+
+                nameof(Person.Address) =>
+                    allPersons.Where(p =>
+                        !string.IsNullOrEmpty(p.Address) &&
+                        p.Address.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+
+                _ => allPersons
             };
-            ;
-            return filteredPersons;
         }
 
-        public List<PersonAddRequest> AddSomeMockData()
+
+        public List<PersonResponse> GetSortedPersons(List<PersonResponse> personsToSort, string sortBy, SortOrderOptions sortOrder)
         {
+            if (personsToSort == null || personsToSort.Count == 0)
+                return [];
+
+            Func<PersonResponse, object?> keySelector = sortBy switch
+            {
+                nameof(Person.Name) => p => p.Name,
+                nameof(Person.Email) => p => p.Email,
+                nameof(Person.Dob) => p => p.Dob,
+                nameof(Person.Gender) => p => p.Gender,
+                nameof(Person.CountryId) => p => p.CountryId,
+                nameof(Person.Address) => p => p.Address,
+                _ => p => p.Name // default sort
+            };
+
+            return sortBy == null ? personsToSort : sortOrder == SortOrderOptions.ASC
+                ? [.. personsToSort.OrderBy(keySelector)]
+                : [.. personsToSort.OrderByDescending(keySelector)];
+        }
+
+
+        public List<PersonResponse> AddSomeMockData()
+        {
+            List<PersonResponse> personResponses = [];
             CountryResponse? countryResponse = _countriesService.AddCountry(new CountryAddRequest() { CountryName = "Ireland" });
             Guid? countryId = _countriesService.GetCountryByID(countryResponse.CountryId)?.CountryId;
             List<PersonAddRequest> personAddRequests =
@@ -128,8 +176,15 @@ namespace Services
                     RecieveNewsletters = true
                 }
             ];
+            
+            foreach(PersonAddRequest personAddRequest in personAddRequests)
+            {
+                PersonResponse personResponse = AddPerson(personAddRequest);
+                personResponses.Add(personResponse);
 
-            return personAddRequests;
+            }
+           
+            return personResponses;
         }
     }
 }

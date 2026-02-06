@@ -43,10 +43,7 @@ namespace ServiceContracts.DTO
                 && RecieveNewsletters == person.RecieveNewsletters;        
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() { return HashCode.Combine(Id, Name, Email, Dob, Gender, CountryId, Address, RecieveNewsletters); }
 
         public override string ToString()
         {
