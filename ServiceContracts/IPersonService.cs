@@ -52,6 +52,13 @@ namespace ServiceContracts
         /// <returns>Returns the PersonUpdateResponse object</returns>
         PersonResponse? UpdatePerson(PersonUpdateRequest? personUpdateRequest);
 
+        // <summary>
+        /// Delete the Person with the given ID and values and return an object of PersonResponse
+        /// </summary>
+        /// <param name="id">Id of person to be deleted</param>
+        /// <returns>Returns the PersonResponse object</returns>
+        PersonResponse? DeletePerson(PersonDeleteRequest? personDeleteRequest);
+
         List<PersonResponse> AddSomeMockData();
     }
 }

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<PersonResponse>
+
+<h1>PersonsList</h1>
+<form action="~/persons/index" method="Get">
+    <label>Search By:</label>
+    <select name="searchBy">
+        @foreach (var searchField in ViewBag.SearchFields)
+        {
+            <option value="@searchField.Key">@searchField.Value</option>
+        }
+    </select>
+    <label>Search:</label>
+    <input type="search" id=Search placeholder="search" name="searchStr" />
+    <button type="submit">Search</button>
+@* When the user clicks the submit button the values from named inputs will be collected 
+example: searchBy=Name&searchStr=abc
+*@
+<a href="/persons/index">Clear All</a>
+<h2>Persons: @Model.Count()</h2>
+<ul>
+    @foreach(PersonResponse person in @Model)
+    {
+        <li>@person.Name, @person.Address, @person.CountryId, @person.Age, @person.Country, @person.Email, @person.Dob</li>
+    }
+</ul>
+</form>

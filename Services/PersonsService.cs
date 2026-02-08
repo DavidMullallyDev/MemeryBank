@@ -3,6 +3,7 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services.Helpers;
+using System.Net.Http.Headers;
 
 namespace Services
 {
@@ -12,10 +13,25 @@ namespace Services
         private readonly List<Person> _persons;
         private readonly CountriesService _countriesService;
 
-        public PersonsService()
+        public PersonsService(bool initialize = true)
         {
             _persons = [];
             _countriesService = new CountriesService();
+
+            List <CountryResponse> allCountries = _countriesService.GetAllCountries();
+            if (initialize)
+            {
+                AddPerson(new PersonAddRequest() { Name = "Rhoda", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
+                AddPerson(new PersonAddRequest() { Name = "Anjela", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
+                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
+                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
+                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
+                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
+                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
+                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
+                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
+                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
+            }
         }
 
         private PersonResponse ConvertPersonToPersonResponse(Person person)
@@ -46,12 +62,16 @@ namespace Services
             //Add person to list/Datastore
             _persons.Add(person);
 
+            PersonResponse personResponse = person.ToPersonResponse();
+            personResponse.Country = _countriesService.GetCountryByID(personResponse.CountryId)?.CountryName;
+            PersonResponse covertedPersonRwsponse = ConvertPersonToPersonResponse(person);
             return ConvertPersonToPersonResponse(person);
         }
 
         public List<PersonResponse> GetPersonList()
         {
-            return [.. _persons.Select(p => p.ToPersonResponse())];
+            List<PersonResponse> list = [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
+            return [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
         }
 
         public PersonResponse? GetPersonByID(Guid? Id)
@@ -104,7 +124,6 @@ namespace Services
             };
         }
 
-
         public List<PersonResponse> GetSortedPersons(List<PersonResponse> personsToSort, string sortBy, SortOrderOptions sortOrder)
         {
             if (personsToSort == null || personsToSort.Count == 0)
@@ -129,25 +148,40 @@ namespace Services
 
         public PersonResponse? UpdatePerson(PersonUpdateRequest? personUpdateRequest)
         {
-            PersonResponse? personResponse;
-            if (personUpdateRequest == null || personUpdateRequest.Name == null) throw new ArgumentException();
+            ArgumentNullException.ThrowIfNull(personUpdateRequest);
 
-            PersonResponse? personToUpdate = AddSomeMockData().Where(p => p.Id == personUpdateRequest?.Id).FirstOrDefault();
+            ValidationHelper.ModelValidation(personUpdateRequest);
 
-            if (personToUpdate != null)
+            Person? personToUpdate = _persons.Where(p => p.Id == personUpdateRequest?.Id).FirstOrDefault() ?? throw new ArgumentException($"No person found with this Id: {personUpdateRequest.Id}");
+
+            personToUpdate.Address = personUpdateRequest?.Address;
+            personToUpdate.Gender = personUpdateRequest?.Gender.ToString();
+            personToUpdate.RecieveNewsletters = personUpdateRequest.RecieveNewsletters;
+            personToUpdate.Email = personUpdateRequest.Email;
+            personToUpdate.CountryId = personUpdateRequest.CountryId;
+            personToUpdate.Dob = personUpdateRequest.Dob;
+            personToUpdate.Name = personUpdateRequest.Name;
+
+            return personToUpdate.ToPersonResponse();     
+        }
+
+        public PersonResponse? DeletePerson(PersonDeleteRequest? personDeleteRequest)
+        {
+            if (personDeleteRequest == null) throw new ArgumentNullException();
+
+            Person? personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+
+            if ( personToDelete == null)
             {
-                personToUpdate.Address = personUpdateRequest?.Address;
-                personToUpdate.Gender = personUpdateRequest?.Gender.ToString();
-                personToUpdate.RecieveNewsletters = personUpdateRequest.RecieveNewsletters;
-                personToUpdate.Email = personUpdateRequest.Email;
-                personToUpdate.CountryId = personUpdateRequest.CountryId;
-                personToUpdate.Dob = personUpdateRequest.Dob;
-                personToUpdate.Name = personUpdateRequest.Name;
+                throw new ArgumentException("Person not found");
             }
+            else
+            {
+                 personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+                _persons.Remove(personToDelete);
 
-            personResponse = personUpdateRequest?.ToPerson().ToPersonResponse();
-
-            return personResponse;
+                return personToDelete.ToPersonResponse();
+            }    
         }
 
         public List<PersonResponse> AddSomeMockData()

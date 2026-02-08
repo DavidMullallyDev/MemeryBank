@@ -74,6 +74,9 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 {
     config.AddJsonFile("customConfig.json", optional: true); //can add  tgird argument "reloadOnChange:true" if you want the app to auto reload whenever you make a change in the json file
 });
+
+builder.Services.AddSingleton<ICountriesService, CountriesService>();
+builder.Services.AddSingleton<IPersonService, PersonsService>();
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 //if (app.Environment.IsEnvironment("Beta")) app.UseDeveloperExceptionPage(); example you created a custom environment Beta

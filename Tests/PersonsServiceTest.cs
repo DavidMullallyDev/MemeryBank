@@ -18,7 +18,7 @@ namespace Tests
         public PersonsServiceTest(ITestOutputHelper testOutputHelper) 
         {
             _personService = new PersonsService();
-            _countriesService = new CountriesService();
+            _countriesService = new CountriesService(false);
             _outputHelper = testOutputHelper;
         }
 
@@ -328,7 +328,7 @@ namespace Tests
         {
             PersonUpdateRequest? personUpdateRequest = null;
 
-            Assert.Throws<ArgumentException>(() =>
+            Assert.Throws<ArgumentNullException>(() =>
             {
                 PersonResponse? personResponse = _personService.UpdatePerson(personUpdateRequest);
             });
@@ -401,6 +401,73 @@ namespace Tests
             _outputHelper.WriteLine(personResponseFromUpdate.ToString());
 
             Assert.Equal(personToUpdate,personResponseFromUpdate);
+        }
+        #endregion
+
+        #region DeletePerson
+        [Fact]
+        public void DeletePerson_PersonDeleteRequestIsNull()
+        {
+            PersonDeleteRequest? personDeleteRequest= null;
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                _personService.DeletePerson(personDeleteRequest);
+            });
+        }
+
+        [Fact]
+        public void DeletePerson_PersonDoesNotExist()
+        {
+            List<PersonResponse> allPersons = _personService.AddSomeMockData();
+            PersonResponse personToDelete = allPersons[0];
+
+            PersonDeleteRequest personDeleteRequest = new()
+            {
+                Id = Guid.NewGuid(),
+                Name = personToDelete.Name,
+                Address = personToDelete.Address,
+                Dob = personToDelete.Dob,
+                Email = personToDelete.Email,
+                RecieveNewsletters = personToDelete.RecieveNewsletters,
+                Gender = Enum.Parse<GenderOptions>(personToDelete.Gender, true),
+                CountryId = personToDelete.CountryId
+            };
+
+            Assert.Throws<ArgumentException>(()=>
+            {
+                _personService.DeletePerson(personDeleteRequest);
+            });
+           
+        }
+
+        [Fact]
+        public void DeletePerson_ValidRequest()
+        {
+            List<PersonResponse> allPersons = _personService.AddSomeMockData();
+            PersonResponse personToDelete = allPersons[0];
+
+            PersonDeleteRequest personDeleteRequest = new()
+            {
+                Id = personToDelete.Id,
+                Name = personToDelete.Name,
+                Address = personToDelete.Address,
+                Dob = personToDelete.Dob,
+                Email = personToDelete.Email,
+                RecieveNewsletters = personToDelete.RecieveNewsletters,
+                Gender = Enum.Parse<GenderOptions>(personToDelete.Gender, true),
+                CountryId = personToDelete.CountryId
+            };
+
+            _outputHelper.WriteLine("Expected:");
+            _outputHelper.WriteLine(personToDelete.ToString());
+
+            PersonResponse? deletedPerson = _personService.DeletePerson(personDeleteRequest);
+
+            _outputHelper.WriteLine("Actual:");
+            _outputHelper.WriteLine(deletedPerson.ToString());
+
+            Assert.Equal(personToDelete, deletedPerson);
         }
         #endregion
     }
