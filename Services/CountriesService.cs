@@ -15,7 +15,7 @@ namespace Services
             //CountryName cannot be null
             if (countryAddRequest.CountryName == null) throw new ArgumentException(nameof(countryAddRequest.CountryName));
             //Duplicate countries are not allowed 
-            if (_countriesList.Any((temp) => temp.CountryName == countryAddRequest.CountryName)) throw new ArgumentException($"Country: {countryAddRequest.CountryName}");
+            if (_countriesList.Any((temp) => temp.CountryName == countryAddRequest.CountryName)) throw new ArgumentException($"Duplicate Country: {countryAddRequest.CountryName}");
 
             //convert countryAddRequest from type CountryAddRequest to type Country
             Country? country = countryAddRequest.ToCountry();

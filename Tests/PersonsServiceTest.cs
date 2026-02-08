@@ -321,5 +321,87 @@ namespace Tests
             }
         }
         #endregion
+
+        #region UpdatePerson
+        [Fact]
+        public void UpdatePerson_NullPersonUpdateRequest()
+        {
+            PersonUpdateRequest? personUpdateRequest = null;
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                PersonResponse? personResponse = _personService.UpdatePerson(personUpdateRequest);
+            });
+        }
+
+        [Fact]
+        public void UpdatePerson_InvalidId()
+        {
+            PersonUpdateRequest? personUpdateRequest = new() { Id = Guid.NewGuid()};
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                PersonResponse? personResponse = _personService.UpdatePerson(personUpdateRequest);
+            });
+        }
+
+        [Fact]
+        public void UpdatePerson_NameIsNull()
+        {
+            List<PersonResponse> allPersons = _personService.AddSomeMockData();
+
+            PersonUpdateRequest personUpdateRequest = new()
+            {
+                Id = allPersons[2].Id,
+                Name = null,
+                Address = "TestAddress",
+                Gender = GenderOptions.Diverse,
+                Dob = new DateTime(2002, 1, 1),
+                RecieveNewsletters = false,
+                Email = "test@email.com"
+            };
+
+            Assert.Throws<ArgumentException>(()=>
+            {
+                _personService.UpdatePerson(personUpdateRequest);
+            });
+        }
+
+        [Fact]
+        public void UpdatePerson_ValidPersonUpdateRequest()
+        {
+            List<PersonResponse> allPersons = _personService.AddSomeMockData();
+
+            PersonResponse personToUpdate = allPersons[1];
+            PersonUpdateRequest personUpdateRequest = new()
+            {
+                Id = personToUpdate.Id,
+                Name = "TestUpdate",
+                Address = "TestAddress",
+                Gender = Enum.Parse<GenderOptions>(personToUpdate.Gender, true),
+                Dob = personToUpdate.Dob,
+                RecieveNewsletters = personToUpdate.RecieveNewsletters,
+                CountryId = personToUpdate.CountryId,
+                Email = "updated@email.com"
+            };
+
+            personToUpdate.Name = personUpdateRequest.Name;
+            personToUpdate.Address = personUpdateRequest.Address;
+            personToUpdate.Email = personUpdateRequest.Email;
+            
+            PersonResponse? personResponseFromUpdate = _personService.UpdatePerson(personUpdateRequest);
+
+
+            _outputHelper.WriteLine("Expected:");
+            _outputHelper.WriteLine(personToUpdate.ToString());
+
+           
+
+            _outputHelper.WriteLine("Actual:");
+            _outputHelper.WriteLine(personResponseFromUpdate.ToString());
+
+            Assert.Equal(personToUpdate,personResponseFromUpdate);
+        }
+        #endregion
     }
 }

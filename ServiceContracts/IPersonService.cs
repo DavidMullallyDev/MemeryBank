@@ -36,13 +36,21 @@ namespace ServiceContracts
         List<PersonResponse>? GetFilteredPersons(string searchBy, string? searchStr);
 
         /// <summary>
-        /// Returns all persons sorted in eithe asc
+        /// Returns all persons sorted in either asc or desc order
         /// </summary>
         /// <param name="personsToSort">Represents the list of persons to sort</param>
         /// <param name="sortBy">Name of the property (key) by which the perosns should be sorted</param>
         /// <param name="sortOrder">Order in which the persons should be sorted</param>
         /// <returns>Returns sorted persons as List of PersonResponse</returns>
         List<PersonResponse> GetSortedPersons(List<PersonResponse> personsToSort, string sortBy, SortOrderOptions sortOrder);
+
+        /// <summary>
+        /// Update the Person with the given ID and values and return an object of PersObjectResponse
+        /// </summary>
+        /// <param name="id">Id of person to be updated</param>
+        /// <param name="personUpdateRequest">contains updated info</param>
+        /// <returns>Returns the PersonUpdateResponse object</returns>
+        PersonResponse? UpdatePerson(PersonUpdateRequest? personUpdateRequest);
 
         List<PersonResponse> AddSomeMockData();
     }

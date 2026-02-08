@@ -1,5 +1,5 @@
 ﻿using Entities;
-using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 
 namespace ServiceContracts.DTO
 {
@@ -52,28 +52,41 @@ namespace ServiceContracts.DTO
     }
 }
 
-/// <summary>
-/// An extenison method to convert of object of Person class into PersonResponse class
-/// </summary>
-/// <param name="person">The Person object to convertt</param>
-/// <returns>Returns the converted PersonREsponseObject</returns>
-/// 
-public static class PersonExtensions
+namespace ServiceContracts.DTO
 {
-    public static PersonResponse ToPersonResponse(this Person person)
+    public static class PersonExtensions
     {
-        //Person => PersonResponse
-        return new PersonResponse()
+        public static PersonResponse ToPersonResponse(this Person person)
         {
-            Id = person.Id,
-            Name = person.Name,
-            Email = person.Email,
-            Dob = person.Dob,
-            Gender = person.Gender,
-            CountryId = person.CountryId,
-            Address = person.Address,
-            RecieveNewsletters = person.RecieveNewsletters,
-            Age = (person.Dob != null) ? Math.Round((DateTime.Now - person.Dob.Value).TotalDays / 365.25) : 0
-        };
+            return new PersonResponse()
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Email = person.Email,
+                Dob = person.Dob,
+                Gender = person.Gender,
+                CountryId = person.CountryId,
+                Address = person.Address,
+                RecieveNewsletters = person.RecieveNewsletters,
+                Age = (person.Dob != null)
+                    ? Math.Round((DateTime.Now - person.Dob.Value).TotalDays / 365.25)
+                    : 0
+            };
+        }
+
+        public static PersonUpdateRequest ToPersonUpdateRequest(this Person person)
+        {
+            return new PersonUpdateRequest()
+            {
+                Id = person.Id,
+                Name = person.Name,
+                Email = person.Email,
+                Dob = person.Dob,
+                Gender = Enum.Parse<GenderOptions>(person.Gender, true),
+                CountryId = person.CountryId,
+                Address = person.Address,
+                RecieveNewsletters = person.RecieveNewsletters,
+            };
+        }
     }
 }

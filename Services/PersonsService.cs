@@ -3,7 +3,6 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services.Helpers;
-using System.ComponentModel.Design;
 
 namespace Services
 {
@@ -52,7 +51,7 @@ namespace Services
 
         public List<PersonResponse> GetPersonList()
         {
-            return _persons.Select(p => p.ToPersonResponse()).ToList();
+            return [.. _persons.Select(p => p.ToPersonResponse())];
         }
 
         public PersonResponse? GetPersonByID(Guid? Id)
@@ -119,6 +118,7 @@ namespace Services
                 nameof(Person.Gender) => p => p.Gender,
                 nameof(Person.CountryId) => p => p.CountryId,
                 nameof(Person.Address) => p => p.Address,
+                nameof(Person.RecieveNewsletters) => p => p.RecieveNewsletters,
                 _ => p => p.Name // default sort
             };
 
@@ -127,12 +127,42 @@ namespace Services
                 : [.. personsToSort.OrderByDescending(keySelector)];
         }
 
+        public PersonResponse? UpdatePerson(PersonUpdateRequest? personUpdateRequest)
+        {
+            PersonResponse? personResponse;
+            if (personUpdateRequest == null || personUpdateRequest.Name == null) throw new ArgumentException();
+
+            PersonResponse? personToUpdate = AddSomeMockData().Where(p => p.Id == personUpdateRequest?.Id).FirstOrDefault();
+
+            if (personToUpdate != null)
+            {
+                personToUpdate.Address = personUpdateRequest?.Address;
+                personToUpdate.Gender = personUpdateRequest?.Gender.ToString();
+                personToUpdate.RecieveNewsletters = personUpdateRequest.RecieveNewsletters;
+                personToUpdate.Email = personUpdateRequest.Email;
+                personToUpdate.CountryId = personUpdateRequest.CountryId;
+                personToUpdate.Dob = personUpdateRequest.Dob;
+                personToUpdate.Name = personUpdateRequest.Name;
+            }
+
+            personResponse = personUpdateRequest?.ToPerson().ToPersonResponse();
+
+            return personResponse;
+        }
 
         public List<PersonResponse> AddSomeMockData()
         {
             List<PersonResponse> personResponses = [];
-            CountryResponse? countryResponse = _countriesService.AddCountry(new CountryAddRequest() { CountryName = "Ireland" });
-            Guid? countryId = _countriesService.GetCountryByID(countryResponse.CountryId)?.CountryId;
+            CountryResponse? countryResponse = new CountryResponse();
+            if(_countriesService.GetAllCountries().Any(c => c.CountryName == "Ireland"))
+            {
+                countryResponse = _countriesService.GetAllCountries().Where(c => c.CountryName == "Ireland").FirstOrDefault();
+            }
+            else
+            {
+                countryResponse = _countriesService.AddCountry(new CountryAddRequest() { CountryName = "Ireland" });
+            }
+                Guid? countryId = _countriesService.GetCountryByID(countryResponse.CountryId)?.CountryId;
             List<PersonAddRequest> personAddRequests =
             [
                 new PersonAddRequest()
