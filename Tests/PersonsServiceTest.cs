@@ -17,7 +17,7 @@ namespace Tests
         //Constructor
         public PersonsServiceTest(ITestOutputHelper testOutputHelper) 
         {
-            _personService = new PersonsService();
+            _personService = new PersonsService(false);
             _countriesService = new CountriesService(false);
             _outputHelper = testOutputHelper;
         }
@@ -156,7 +156,7 @@ namespace Tests
         public void GetAllPersons_AllPersons()
         {
             //Arrange
-            List<PersonResponse>? personResponses = _personService.AddSomeMockData();
+            List<PersonResponse>? personResponses = _personService.GetPersonList();
 
             _outputHelper.WriteLine("Expected:");
             //print persons_response_from_add
@@ -378,7 +378,7 @@ namespace Tests
                 Id = personToUpdate.Id,
                 Name = "TestUpdate",
                 Address = "TestAddress",
-                Gender = Enum.Parse<GenderOptions>(personToUpdate.Gender, true),
+                Gender = personToUpdate.Gender != null ? Enum.Parse<GenderOptions>(personToUpdate.Gender, true) : null,
                 Dob = personToUpdate.Dob,
                 RecieveNewsletters = personToUpdate.RecieveNewsletters,
                 CountryId = personToUpdate.CountryId,
@@ -396,9 +396,9 @@ namespace Tests
             _outputHelper.WriteLine(personToUpdate.ToString());
 
            
-
+            
             _outputHelper.WriteLine("Actual:");
-            _outputHelper.WriteLine(personResponseFromUpdate.ToString());
+            if(personResponseFromUpdate != null) _outputHelper.WriteLine(personResponseFromUpdate.ToString());
 
             Assert.Equal(personToUpdate,personResponseFromUpdate);
         }
@@ -430,7 +430,7 @@ namespace Tests
                 Dob = personToDelete.Dob,
                 Email = personToDelete.Email,
                 RecieveNewsletters = personToDelete.RecieveNewsletters,
-                Gender = Enum.Parse<GenderOptions>(personToDelete.Gender, true),
+                Gender = personToDelete.Gender != null ? Enum.Parse<GenderOptions>(personToDelete.Gender, true) : null,
                 CountryId = personToDelete.CountryId
             };
 
@@ -455,7 +455,7 @@ namespace Tests
                 Dob = personToDelete.Dob,
                 Email = personToDelete.Email,
                 RecieveNewsletters = personToDelete.RecieveNewsletters,
-                Gender = Enum.Parse<GenderOptions>(personToDelete.Gender, true),
+                Gender = personToDelete.Gender != null ? Enum.Parse<GenderOptions>(personToDelete.Gender, true) : null,
                 CountryId = personToDelete.CountryId
             };
 
@@ -465,7 +465,7 @@ namespace Tests
             PersonResponse? deletedPerson = _personService.DeletePerson(personDeleteRequest);
 
             _outputHelper.WriteLine("Actual:");
-            _outputHelper.WriteLine(deletedPerson.ToString());
+            if(deletedPerson != null) _outputHelper.WriteLine(deletedPerson.ToString());
 
             Assert.Equal(personToDelete, deletedPerson);
         }

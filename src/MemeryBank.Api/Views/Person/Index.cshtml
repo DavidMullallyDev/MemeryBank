@@ -6,21 +6,69 @@
     <select name="searchBy">
         @foreach (var searchField in ViewBag.SearchFields)
         {
-            <option value="@searchField.Key">@searchField.Value</option>
+            if (searchField.Key == ViewBag.CurrentSearchBy)
+            {
+                <option value="@searchField.Key" selected="selected">@searchField.Value</option>
+            }
+            else
+            {
+                <option value="@searchField.Key">@searchField.Value</option>
+            }   
         }
     </select>
     <label>Search:</label>
-    <input type="search" id=Search placeholder="search" name="searchStr" />
+    <input type="search" id=Search placeholder="search" name="searchStr" value="@ViewBag.CurrentSearchStr" />
     <button type="submit">Search</button>
 @* When the user clicks the submit button the values from named inputs will be collected 
 example: searchBy=Name&searchStr=abc
 *@
 <a href="/persons/index">Clear All</a>
 <h2>Persons: @Model.Count()</h2>
-<ul>
-    @foreach(PersonResponse person in @Model)
-    {
-        <li>@person.Name, @person.Address, @person.CountryId, @person.Age, @person.Country, @person.Email, @person.Dob</li>
-    }
-</ul>
+<table style="border: double;">
+        <thead style="border: double;">
+        @foreach (var searchField in ViewBag.SearchFields)
+        {
+                if(searchField.Key == ViewBag.CurrentSortBy)
+                { 
+                    <td style="border: double;">
+                    <a href="~/persons/index?searchBy=@ViewBag.CurrentSearchBy&searchOrder=@ViewBag.CurrentSearchOrder&sortBy=@searchField.Key&sortOrder=@ViewBag.CurrentSortOrder">
+                        @searchField.Value
+                    </a>
+                    @if(ViewBag.CurrentSortOrder == @SortOrderOptions.DESC )
+                        {
+                          <i class= "fa-solid fa-sort-up" ></i>
+                        } 
+                        else
+                        {
+                        <i class="fa-solid fa-sort-down"></i>
+                        }
+                    </td>
+                }
+                else
+                {
+                <td style="border: double;">
+                    <a href="~/persons/index?searchBy=@ViewBag.CurrentSearchBy&searchOrder=@ViewBag.CurrentSearchOrder&sortBy=@searchField.Key&sortOrder=@ViewBag.CurrentSortOrder">
+                        @searchField.Value
+                    </a>
+                    <i class="fa-solid fa-sort-down"></i>
+                </td>
+                }
+            }
+        </thead>
+        <tbody style="border: double;">
+         @foreach (PersonResponse person in @Model)
+         {
+              <tr style="border: double;">
+                    <td style="border: double;">@person.Name</td>
+                    <td style="border: double;">@person.Dob</td>
+                    <td style="border: double;">@person.Age</td>
+                    <td style="border: double;">@person.Email</td>
+                    <td style="border: double;">@person.Gender</td>
+                    <td style="border: double;">@person.CountryId</td>
+                    <td style="border: double;">@person.Country</td>
+                    <td style="border: double;">@person.RecieveNewsletters</td>
+              </tr>
+         }
+    </tbody>
+</table>
 </form>

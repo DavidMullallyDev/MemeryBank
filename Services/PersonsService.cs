@@ -87,38 +87,47 @@ namespace Services
 
             List<PersonResponse> allPersons = GetPersonList() ?? [];
 
+            if (searchBy.Equals("Country"))
+            {
+                return allPersons.Where(p => p.Country.Contains(searchStr))?.ToList();
+            }
             return searchBy switch
             {
-                nameof(Person.Name) =>
-                    allPersons.Where(p =>
+                nameof(PersonResponse.Name) =>
+                    [.. allPersons.Where(p =>
                         !string.IsNullOrEmpty(p.Name) &&
-                        p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+                        p.Name.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
 
-                nameof(Person.Email) =>
-                    allPersons.Where(p =>
+                nameof(PersonResponse.Email) =>
+                    [.. allPersons.Where(p =>
                         !string.IsNullOrEmpty(p.Email) &&
-                        p.Email.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+                        p.Email.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
 
-                nameof(Person.Dob) =>
-                    allPersons.Where(p =>
+                nameof(PersonResponse.Dob) =>
+                    [.. allPersons.Where(p =>
                         p.Dob != null &&
                         p.Dob.Value.ToString("dd MMMM yyyy")
-                            .Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+                            .Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
 
-                nameof(Person.Gender) =>
-                    allPersons.Where(p =>
+                nameof(PersonResponse.Gender) =>
+                    [.. allPersons.Where(p =>
                         !string.IsNullOrEmpty(p.Gender) &&
-                        p.Gender.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+                        p.Gender.StartsWith
+                        
+                        
+                        (searchStr, StringComparison.OrdinalIgnoreCase))],
 
-                nameof(Person.CountryId) =>
-                    allPersons.Where(p =>
+                nameof(PersonResponse.CountryId) =>
+                    [.. allPersons.Where(p =>
                         !string.IsNullOrEmpty(p.Country) &&
-                        p.Country.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+                        p.Country.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
 
-                nameof(Person.Address) =>
-                    allPersons.Where(p =>
+                nameof(PersonResponse.Address) =>
+                    [.. allPersons.Where(p =>
                         !string.IsNullOrEmpty(p.Address) &&
-                        p.Address.Contains(searchStr, StringComparison.OrdinalIgnoreCase)).ToList(),
+                        p.Address.Contains(searchStr, StringComparison.OrdinalIgnoreCase))],
+
+                
 
                 _ => allPersons
             };
@@ -177,10 +186,18 @@ namespace Services
             }
             else
             {
-                 personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
-                _persons.Remove(personToDelete);
+                if(_persons != null)
+                {
+                    personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+                    if (personToDelete != null)
+                    {
+                        _persons.Remove(personToDelete);
 
-                return personToDelete.ToPersonResponse();
+                        return personToDelete.ToPersonResponse();
+                    }
+                }
+
+                return null;
             }    
         }
 
@@ -196,7 +213,7 @@ namespace Services
             {
                 countryResponse = _countriesService.AddCountry(new CountryAddRequest() { CountryName = "Ireland" });
             }
-                Guid? countryId = _countriesService.GetCountryByID(countryResponse.CountryId)?.CountryId;
+                Guid? countryId = countryResponse != null ? _countriesService.GetCountryByID(countryResponse.CountryId)?.CountryId : null;
             List<PersonAddRequest> personAddRequests =
             [
                 new PersonAddRequest()

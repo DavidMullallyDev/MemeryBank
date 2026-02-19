@@ -9,7 +9,7 @@ namespace MemeryBank.Api.ViewComponents
     {
         //every viewcomponent must have this method
         //public async Task<IViewComponentResult> InvokeAsync(List<Person>? people)
-        public async Task<IViewComponentResult> InvokeAsync(List<Person>? people)
+        public IViewComponentResult Invoke(List<Person>? people)
         {
             //List<Person> people = new List<Person>() { new() { FirstName = "dengo", LastName = "mullally" }, new() {FirstName="doodles", LastName="de brito pimentel" } };
             //logic to get data from database object etc can placed here and sent to the view

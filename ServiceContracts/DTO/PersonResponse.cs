@@ -81,7 +81,7 @@ namespace ServiceContracts.DTO
                 Name = person.Name,
                 Email = person.Email,
                 Dob = person.Dob,
-                Gender = Enum.Parse<GenderOptions>(person.Gender, true),
+                Gender = person.Gender == null? null : Enum.Parse<GenderOptions>(person.Gender, true),
                 CountryId = person.CountryId,
                 Address = person.Address,
                 RecieveNewsletters = person.RecieveNewsletters,
