@@ -21,16 +21,16 @@ namespace Services
             List <CountryResponse> allCountries = _countriesService.GetAllCountries();
             if (initialize)
             {
-                AddPerson(new PersonAddRequest() { Name = "Rhoda", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
-                AddPerson(new PersonAddRequest() { Name = "Anjela", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
-                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
-                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
-                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
-                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
-                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
-                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
-                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsletters = true });
-                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsletters = false });
+                AddPerson(new PersonAddRequest() { Name = "Rhoda", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                AddPerson(new PersonAddRequest() { Name = "Anjela", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
             }
         }
 
@@ -224,7 +224,7 @@ namespace Services
                     Email = "123@456.com",
                     Gender = GenderOptions.Female,
                     Name = "Dave",
-                    RecieveNewsletters = true
+                    RecieveNewsLetters = true
                 },
                 new PersonAddRequest()
                 {
@@ -234,7 +234,7 @@ namespace Services
                     Email = "123@456.com",
                     Gender = GenderOptions.Female,
                     Name = "Duda",
-                    RecieveNewsletters = true
+                    RecieveNewsLetters = true
                 },
                 new PersonAddRequest()
                 {
@@ -244,7 +244,7 @@ namespace Services
                     Email = "123@456.com",
                     Gender = GenderOptions.Female,
                     Name = "Aoife",
-                    RecieveNewsletters = true
+                    RecieveNewsLetters = true
                 },
                  new PersonAddRequest()
                 {
@@ -254,7 +254,7 @@ namespace Services
                     Email = "123@456.com",
                     Gender = GenderOptions.Female,
                     Name = "Darragh",
-                    RecieveNewsletters = true
+                    RecieveNewsLetters = true
                 }
             ];
             

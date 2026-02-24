@@ -50,7 +50,8 @@ namespace MemeryBank.Api.Controllers
         public IActionResult Create()
         {
             List<CountryResponse> countries = _countriesService.GetAllCountries();
-            return View(countries);
+            ViewBag.Countries = countries;
+            return View();
         }
 
         [Route("[action]")]

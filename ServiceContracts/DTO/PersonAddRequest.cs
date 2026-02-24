@@ -13,12 +13,14 @@ namespace ServiceContracts.DTO
         public string? Name { get; set; }
         [Required(ErrorMessage = "Email Is A Required field")]
         [EmailAddress(ErrorMessage ="Invalid Email")]
+        [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
+        [DataType(DataType.Date)]
         public DateTime? Dob { get; set; }
         public GenderOptions? Gender { get; set; }
         public Guid? CountryId { get; set; }
         public string? Address { get; set; }
-        public bool RecieveNewsletters { get; set; }
+        public bool RecieveNewsLetters { get; set; }
 
 
         /// <summary>
@@ -35,7 +37,7 @@ namespace ServiceContracts.DTO
                 Gender = Gender.ToString(), 
                 CountryId = CountryId, 
                 Address = Address,
-                RecieveNewsletters = RecieveNewsletters 
+                RecieveNewsletters = RecieveNewsLetters 
             };    
         }
     }

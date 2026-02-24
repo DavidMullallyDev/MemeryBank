@@ -57,7 +57,7 @@ namespace Tests
                 Address = "TestAdress St.",
                 Dob = new DateTime(1985, 1, 7),
                 Gender = GenderOptions.Male,
-                RecieveNewsletters = false
+                RecieveNewsLetters = false
             };
 
             PersonResponse? person_response_from_add = _personService.AddPerson(personAddRequest);
@@ -124,7 +124,7 @@ namespace Tests
                 Dob = new DateTime(1985, 1, 7), 
                 Email="abc@def.com",
                 Gender = GenderOptions.Male, 
-                RecieveNewsletters = false
+                RecieveNewsLetters = false
             };
 
             //Act

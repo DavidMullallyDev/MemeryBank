@@ -2,9 +2,9 @@
 
 <h1>PersonsList</h1>
 
-<a href="~/person/create">Create Person</a>
+<a asp-controller="Person" asp-action="Create">Create Person</a>
 
-<form action="~/person/index" method="Get">
+<form asp-controller="Person" asp-action="Index" method="Get">
     <label>Search By:</label>
     <select name="searchBy">
         @foreach (var searchField in ViewBag.SearchFields)
