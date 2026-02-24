@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "Create Person";
+}
+@model IEnumerable<CountryResponse> 
+
+<a href="~person/index">Back To Persons List</a>
+<h2>@ViewBag.Title</h2>
+<div style="width: 50%">
+    <form action="~/person/create" method="post">
+        <div style="display:flex">
+            <label for="Name">Person Name:</label>
+            <input type="text" id="Name" name="Name" />
+        </div>
+        <div style="display:flex">
+            <label for="Email">Email:</label>
+            <input type="email" id="Email" name="Email" />
+        </div>
+        <div style="display:flex">
+            <label for="Dob">Date Of Birth:</label>
+            <input type="date" id="Dob" name="Dob" />
+        </div>
+        <div style="display:flex">
+            <label for="Gender">Gender:</label>
+            <input type="radio" id="Male" name="Gender" value="Male" />
+            <label for="Male">Male</label>
+            <input type="radio" id="Female" name="Gender" value="Female" />
+            <label for="Female">Female</label>
+            <input type="radio" id="Diverse" name="Gender" value="Diverse" />
+            <label for="Diverse">Diverse</label>
+        </div>
+        <div style="display:flex">
+            <label for="CountryId">Country:</label>
+            <select name="CountryId" id="CountryId">
+                <option value="">Please Select...</option>
+                @foreach(CountryResponse countryResponse in @Model)
+                    {
+                        <option value="@countryResponse.CountryId">@countryResponse.CountryName</option>
+                    }
+            </select>
+        </div>
+        <div style="display:flex">
+            <label for="Address">Address:</label>
+            <textarea id="Address" name="Address"></textarea>
+        </div>
+        <div style="display:flex">
+            <input type="checkbox" id="RecieveNewsLetters" name="RecieveNewsLetters" value="true"/>
+            <label for="RecieveNewsLetters">Recieve News Letters:</label>
+        </div>
+        <button type="submit">Submit</button>
+
+        @if (ViewBag.Errors != null)
+        {
+            <div>
+                <ul>
+                    @foreach (var error in ViewBag.Errors)
+                    {
+                        <li>@error</li>
+                    }
+                </ul>
+            </div>
+        }
+    </form>
+</div>

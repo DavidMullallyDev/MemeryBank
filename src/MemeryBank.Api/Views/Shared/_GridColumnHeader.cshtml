@@ -1,0 +1,28 @@
+﻿@foreach (var searchField in ViewBag.SearchFields)
+{
+    if (searchField.Key == ViewBag.CurrentSortBy)
+    {
+        <th style="border: double;">
+            <a href="~/person/index?searchBy=@ViewBag.CurrentSearchBy&searchOrder=@ViewBag.CurrentSearchOrder&sortBy=@searchField.Key&sortOrder=@ViewBag.CurrentSortOrder">
+                @searchField.Value
+            </a>
+            @if (ViewBag.CurrentSortOrder == @SortOrderOptions.DESC)
+            {
+                <i class="fa-solid fa-sort-up"></i>
+            }
+            else
+            {
+                <i class="fa-solid fa-sort-down"></i>
+            }
+        </th>
+    }
+    else
+    {
+        <th style="border: double;">
+            <a href="~/person/index?searchBy=@ViewBag.CurrentSearchBy&searchOrder=@ViewBag.CurrentSearchOrder&sortBy=@searchField.Key&sortOrder=@ViewBag.CurrentSortOrder">
+                @searchField.Value
+            </a>
+            <i class="fa-solid fa-sort-down"></i>
+        </th>
+    }
+}

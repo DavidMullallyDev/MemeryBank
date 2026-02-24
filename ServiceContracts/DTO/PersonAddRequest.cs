@@ -9,9 +9,9 @@ namespace ServiceContracts.DTO
     /// </summary>
     public class PersonAddRequest
     {
-        [Required(ErrorMessage = "Required field")]
+        [Required(ErrorMessage = "Name Is A Required field")]
         public string? Name { get; set; }
-        [Required(ErrorMessage = "Required field")]
+        [Required(ErrorMessage = "Email Is A Required field")]
         [EmailAddress(ErrorMessage ="Invalid Email")]
         public string? Email { get; set; }
         public DateTime? Dob { get; set; }

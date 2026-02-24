@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Entities;
+using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 
 namespace MemeryBank.Api.Controllers
 {
+    [Route("[controller]")]
     public class PersonController : Controller
     {
         private readonly IPersonService _personService;
@@ -16,7 +18,7 @@ namespace MemeryBank.Api.Controllers
             _countriesService = countriesService;
         }
 
-        [Route("persons/index")]
+        [Route("[action]")]
         public IActionResult Index(string searchBy, string searchStr, string sortBy = nameof(PersonResponse.Name), SortOrderOptions sortOrder = SortOrderOptions.DESC)
         {
             List<PersonResponse>? persons = _personService.GetPersonList();
@@ -41,6 +43,28 @@ namespace MemeryBank.Api.Controllers
             ViewData["appTitle"] = "Memery Bank";
             ViewData["pageName"] = "Persons List";
             return View(persons);
+        }
+
+        [Route("[action]")]
+        [HttpGet]
+        public IActionResult Create()
+        {
+            List<CountryResponse> countries = _countriesService.GetAllCountries();
+            return View(countries);
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public IActionResult Create(PersonAddRequest personAddRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                List<CountryResponse> countries = _countriesService.GetAllCountries();
+                return View(countries);
+            }
+            _personService.AddPerson(personAddRequest);
+            return RedirectToAction("Index", "Person");
         }
     }
 }
