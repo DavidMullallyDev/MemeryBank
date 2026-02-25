@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
@@ -50,7 +51,7 @@ namespace MemeryBank.Api.Controllers
         public IActionResult Create()
         {
             List<CountryResponse> countries = _countriesService.GetAllCountries();
-            ViewBag.Countries = countries;
+            ViewBag.Countries = countries.Select(c=> new SelectListItem() { Value = c.CountryId.ToString(), Text = c.CountryName });
             return View();
         }
 

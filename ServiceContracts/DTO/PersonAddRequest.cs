@@ -16,8 +16,11 @@ namespace ServiceContracts.DTO
         [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = "Please Select Your Date Of Birth")]
         public DateTime? Dob { get; set; }
+        [Required(ErrorMessage = "Please Select A Gender")]
         public GenderOptions? Gender { get; set; }
+        [Required(ErrorMessage ="Please Select A Country")]
         public Guid? CountryId { get; set; }
         public string? Address { get; set; }
         public bool RecieveNewsLetters { get; set; }

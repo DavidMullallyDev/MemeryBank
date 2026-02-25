@@ -8,16 +8,19 @@
 <div style="width: 50%">
     <form asp-controller="Person" asp-action="Create" method="post">
         <div style="display:flex">
-            <label for="Name">Person Name:</label>
+            <label asp-for="Name">Person Name:</label>
             <input asp-for="Name" />
+            <span style="color: red;" asp-validation-for="Name"/>
         </div>
         <div style="display:flex">
-            <label for="Email">Email:</label>
+            <label asp-for="Email">Email:</label>
             <input asp-for="Email" />
+            <span style="color: red;" asp-validation-for="Email" />
         </div>
         <div style="display:flex">
-            <label for="Dob">Date Of Birth:</label>
+            <label asp-for="Dob">Date Of Birth:</label>
             <input asp-for="Dob" />
+            <span style="color: red;" asp-validation-for="Dob" />
         </div>
         <div style="display:flex">
             @{
@@ -25,27 +28,25 @@
              }
             @foreach (string gender in genders)
             {
-                <label for="@gender">@gender:</label>
+                <label asp-for="@gender">@gender:</label>
                 <input type="radio" asp-for="@gender" value="@gender" />
             }
         </div>
         <div style="display:flex">
-            <label for="CountryId">Country:</label>
-            <select asp-for="CountryId">
+            <label asp-for="CountryId">Country:</label>
+            <select asp-for="CountryId" asp-items="@ViewBag.Countries">
                 <option value="">Please Select...</option>
-                @foreach(CountryResponse countryResponse in ViewBag.Countries)
-                    {
-                        <option value="@countryResponse.CountryId">@countryResponse.CountryName</option>
-                    }
             </select>
+            <span style="color: red;" asp-validation-for="CountryId" />
         </div>
         <div style="display:flex">
-            <label for="Address">Address:</label>
+            <label asp-for="Address">Address:</label>
             <textarea asp-for="Address"></textarea>
+            <span style="color: red;" asp-validation-for="Address" />
         </div>
         <div style="display:flex">
             <input type="checkbox" asp-for="RecieveNewsLetters" value="true"/>
-            <label for="RecieveNewsLetters">Recieve News Letters:</label>
+            <label asp-for="RecieveNewsLetters">Recieve News Letters:</label>
         </div>
         <button type="submit">Submit</button>
 
@@ -60,5 +61,14 @@
                 </ul>
             </div>
         }
+        @* If you prefer to show all together.. can be better for longer forms *@
+        <div style="color:red;"asp-validation-summary="All"></div>
     </form>
 </div>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="windows.jQuery" asp-fallback-src="~/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js" integrity="sha512-KFHXdr2oObHKI9w4Hv1XPKc898mE4kgYx58oqsc/JqqdLMDI4YjOLzom+EMlW8HFUd0QfjfAvxSL6sEq/a42fQ==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="windows.jQuery.validator" asp-fallback-src="~/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js" integrity="sha512-xq+Vm8jC94ynOikewaQXMEkJIOBp7iArs3IhFWSWdRT3Pq8wFz46p+ZDFAR7kHnSFf+zUv52B3prRYnbDRdgog==" crossorigin="anonymous" referrerpolicy="no-referrer" asp-fallback-test="windows.jQuery.validator.unobtrusive" asp-fallback-src="~/jquery.validate.unobtrusive.min.js"></script>
+}
