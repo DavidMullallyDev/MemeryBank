@@ -8,7 +8,7 @@ namespace ServiceContracts.DTO
     /// <summary>
     /// Represents the DTO class that contains the person details to update
     /// </summary>
-    public class PersonUpdateRequest
+    public class PersonUpdateRequest()
     {
         [Required(ErrorMessage = "Id cannot be blank")]
         public Guid Id { get; set; }
@@ -21,7 +21,7 @@ namespace ServiceContracts.DTO
         public GenderOptions? Gender { get; set; }
         public Guid? CountryId { get; set; }
         public string? Address { get; set; }
-        public bool RecieveNewsletters { get; set; }
+        public bool RecieveNewsLetters { get ; set; }
 
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace ServiceContracts.DTO
                 Gender = Gender.ToString(),
                 CountryId = CountryId,
                 Address = Address,
-                RecieveNewsletters = RecieveNewsletters
+                RecieveNewsLetters = RecieveNewsLetters
             };
         }
     }

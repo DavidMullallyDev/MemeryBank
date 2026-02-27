@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
+using static MemeryBank.Api.Models.Person;
 
 namespace MemeryBank.Api.Controllers
 {
@@ -61,11 +62,69 @@ namespace MemeryBank.Api.Controllers
         {
             if (!ModelState.IsValid)
             {
+                ViewBag.Method = "Create";
                 ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 List<CountryResponse> countries = _countriesService.GetAllCountries();
                 return View(countries);
             }
             _personService.AddPerson(personAddRequest);
+            return RedirectToAction("Index", "Person");
+        }
+
+        [Route("[action]/{Id}")]
+        [HttpGet]
+        public IActionResult Update([FromRoute] Guid? id)
+        {
+            PersonResponse? personToUpdate;
+            if (id != null)
+            {
+                personToUpdate = _personService.GetPersonByID(id);
+                PersonUpdateRequest personUpdateRequest = new()
+                {
+                    Id = personToUpdate.Id,
+                    Address = personToUpdate.Address,
+                    CountryId = personToUpdate.CountryId,
+                    Gender = !string.IsNullOrWhiteSpace(personToUpdate.Gender)
+                    && Enum.TryParse<GenderOptions>(personToUpdate.Gender, ignoreCase: true, out var parsedGender)
+                    ? parsedGender
+                    : (GenderOptions?)null,
+                    Dob = personToUpdate.Dob,
+                    Email = personToUpdate.Email,
+                    Name = personToUpdate.Name,
+                    RecieveNewsLetters = personToUpdate.RecieveNewsletters
+                };
+
+                List<CountryResponse> countries = _countriesService.GetAllCountries();
+                ViewBag.Countries = countries.Select(c => new SelectListItem() { Value = c.CountryId.ToString(), Text = c.CountryName });
+                return View(personUpdateRequest);
+            }
+            return View();
+        }
+
+        [Route("[action]/{Id}")]
+        [HttpPost]
+        public IActionResult Update(PersonUpdateRequest personResponse)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Method = "Update";
+                ViewBag.Errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                List<CountryResponse> countries = _countriesService.GetAllCountries();
+                return View(countries);
+            }
+
+            PersonUpdateRequest personUpdateRequest = new()
+            {
+                Id = (Guid)personResponse.Id,
+                Name = personResponse.Name,
+                Email = personResponse.Email,
+                Dob = personResponse.Dob,
+                Gender = personResponse.Gender,
+                CountryId = personResponse.CountryId,
+                Address = personResponse.Address,
+                RecieveNewsLetters = personResponse.RecieveNewsLetters
+            };
+                _personService.UpdatePerson(personUpdateRequest);
             return RedirectToAction("Index", "Person");
         }
     }

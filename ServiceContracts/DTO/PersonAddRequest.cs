@@ -40,7 +40,7 @@ namespace ServiceContracts.DTO
                 Gender = Gender.ToString(), 
                 CountryId = CountryId, 
                 Address = Address,
-                RecieveNewsletters = RecieveNewsLetters 
+                RecieveNewsLetters = RecieveNewsLetters 
             };    
         }
     }

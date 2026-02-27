@@ -66,7 +66,7 @@ namespace ServiceContracts.DTO
                 Gender = person.Gender,
                 CountryId = person.CountryId,
                 Address = person.Address,
-                RecieveNewsletters = person.RecieveNewsletters,
+                RecieveNewsletters = person.RecieveNewsLetters,
                 Age = (person.Dob != null)
                     ? Math.Round((DateTime.Now - person.Dob.Value).TotalDays / 365.25)
                     : 0
@@ -84,7 +84,7 @@ namespace ServiceContracts.DTO
                 Gender = person.Gender == null? null : Enum.Parse<GenderOptions>(person.Gender, true),
                 CountryId = person.CountryId,
                 Address = person.Address,
-                RecieveNewsletters = person.RecieveNewsletters,
+                RecieveNewsLetters = person.RecieveNewsLetters,
             };
         }
     }

@@ -13,6 +13,6 @@ namespace Entities
         public string? Gender { get; set; }
         public Guid? CountryId { get; set; }
         public string? Address { get; set; }
-        public bool RecieveNewsletters { get; set; }
+        public bool RecieveNewsLetters { get; set; }
     }
 }

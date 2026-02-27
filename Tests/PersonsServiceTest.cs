@@ -357,7 +357,7 @@ namespace Tests
                 Address = "TestAddress",
                 Gender = GenderOptions.Diverse,
                 Dob = new DateTime(2002, 1, 1),
-                RecieveNewsletters = false,
+                RecieveNewsLetters = false,
                 Email = "test@email.com"
             };
 
@@ -380,7 +380,7 @@ namespace Tests
                 Address = "TestAddress",
                 Gender = personToUpdate.Gender != null ? Enum.Parse<GenderOptions>(personToUpdate.Gender, true) : null,
                 Dob = personToUpdate.Dob,
-                RecieveNewsletters = personToUpdate.RecieveNewsletters,
+                RecieveNewsLetters = personToUpdate.RecieveNewsletters,
                 CountryId = personToUpdate.CountryId,
                 Email = "updated@email.com"
             };

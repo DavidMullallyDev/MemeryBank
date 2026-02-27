@@ -33,14 +33,14 @@
             @foreach (PersonResponse person in @Model)
             {
                 <tr style="border: double;">
-                    <td style="border: double; width: 15%;">@person.Name</td>
-                    <td style="border: double; width: 20%;">@person.Dob</td>
-                    <td style="border: double; width: 9%;">@person.Age</td>
-                    <td style="border: double; width: 30%;">@person.Email</td>
-                    <td style="border: double; width: 9%;">@person.Gender</td>
-                    <td style="border: double; width: 10%;">@person.CountryId</td>
-                    <td style="border: double; width: 20%;">@person.Country</td>
-                    <td style="border: double; width: 20%">@person.RecieveNewsletters</td>
+                    <td style="border: double; width: 15%;"><a href="/person/update/@person.Id">@person.Name</a></td>
+                    <td style="border: double; width: 20%;"><a href="/person/update">@person.Dob</a></td>
+                    <td style="border: double; width: 9%;"><a href="/person/update">@person.Age</a></td>
+                    <td style="border: double; width: 30%;"><a href="/person/update">@person.Email</a></td>
+                    <td style="border: double; width: 9%;"><a href="/person/update">@person.Gender</a></td>
+                    <td style="border: double; width: 10%;"><a href="/person/update">@person.CountryId</a></td>
+                    <td style="border: double; width: 20%;"><a href="/person/update">@person.Country</a></td>
+                    <td style="border: double; width: 20%"><a href="/person/update">@person.RecieveNewsletters</a></td>
                 </tr>
             }
         </tbody>

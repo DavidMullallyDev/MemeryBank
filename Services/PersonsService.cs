@@ -146,7 +146,7 @@ namespace Services
                 nameof(Person.Gender) => p => p.Gender,
                 nameof(Person.CountryId) => p => p.CountryId,
                 nameof(Person.Address) => p => p.Address,
-                nameof(Person.RecieveNewsletters) => p => p.RecieveNewsletters,
+                nameof(Person.RecieveNewsLetters) => p => p.RecieveNewsletters,
                 _ => p => p.Name // default sort
             };
 
@@ -165,7 +165,7 @@ namespace Services
 
             personToUpdate.Address = personUpdateRequest?.Address;
             personToUpdate.Gender = personUpdateRequest?.Gender.ToString();
-            personToUpdate.RecieveNewsletters = personUpdateRequest.RecieveNewsletters;
+            personToUpdate.RecieveNewsLetters = personUpdateRequest.RecieveNewsLetters;
             personToUpdate.Email = personUpdateRequest.Email;
             personToUpdate.CountryId = personUpdateRequest.CountryId;
             personToUpdate.Dob = personUpdateRequest.Dob;
