@@ -1,0 +1,109 @@
+﻿@using System.Text.RegularExpressions
+@using System.Globalization
+@model IEnumerable<DKBankTransactionResponse>
+<form asp-controller="DKBBankTransaction" asp-action="@ViewBag.Method" method="post">
+    <div style="display:flex">
+        <select name="year">
+            @{
+                for (int i = 2025; i <= 2100; i++)
+                {
+                    if (i == ViewBag.CurrentSelectedYear)
+                    {
+                        <option value="@i" selected="selected">@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            }
+        </select>
+        <select name="month">
+            @{
+                string[] months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                if (ViewBag.CurrentSelectedYear == 2025)
+                {
+                    for (int i = 11; i <= 12; i++)
+                    {
+                        if (i == ViewBag.CurrentSelectedMonth)
+                        {
+                            <option value="@i" selected="selected">@months[i - 1]</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@months[i - 1]</option>
+                        }
+                    }
+                }
+                else if (ViewBag.CurrentSelectedYear == DateTime.Now.Year)
+                {
+                    for (int i = 1; i <= DateTime.Now.Month; i++)
+                    {
+                        if (i == ViewBag.CurrentSelectedMonth)
+                        {
+                            <option value="@i" selected="selected">@months[i - 1]</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@months[i - 1]</option>
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 1; i <= 12; i++)
+                    {
+                        if (i == ViewBag.CurrentSelectedMonth)
+                        {
+                            <option value="@i" selected="selected">@months[i - 1]</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@months[i - 1]</option>
+                        }
+                    }
+                }
+            }
+        </select>
+    </div>
+    <button type="submit">Show</button>
+</form>
+@{
+    decimal? total = Model.Sum(t => decimal.Parse(t.Betrag.ToString(), new CultureInfo("de-DE")));
+    if (total >= 0)
+    {
+        <h3 style="color:green"> Total: @total </h3>
+    }
+    else
+    {
+        <h3 style="color:red"> Total: @total </h3>
+    }
+}
+<br />
+<h3>Google Play Apps/ Pay: @Model.Where(t => t.Zahlungsempfänger.Contains("Google", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Dengo Azure acc: @Model.Where(t => t.Zahlungsempfänger.Contains("Microsoft", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Dengo Work Xmas trip: @Model.Where(t => t.Zahlungsempfänger.Contains("Phantasialand/Bruhl", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Doodles Laser Treatment: @Model.Where(t => t.Zahlungsempfänger.Contains("Ridvan Tosun", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Car Maintanence/Repairs: @Model.Where(t => t.Zahlungsempfänger.Contains("UZR.stop.go.", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Aoife Daycare Betrag Dings: @Model.Where(t => t.Zahlungsempfänger.Contains("Stadtkasse Duesseldorf", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Electricity: @Model.Where(t => t.Zahlungsempfänger.Contains("E.ON Energie Deutschland GmbH", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Activities Aoife: @Model.Where(t => t.Zahlungsempfänger.Contains("SPORTGEISTER-SCHULSPORTSPAß E.V.", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Streaming: @Model.Where(t => t.Zahlungsempfänger.Contains("Netflix", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Chancen: @Model.Where(t => t.Zahlungsempfänger.Contains("Chancen", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Mayrische: @Model.Where(t => t.Zahlungsempfänger.Contains("Thalia", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Cloths: @Model.Where(t => t.Zahlungsempfänger.Contains("Decathlon", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Eating Out: @Model.Where(t => t.Zahlungsempfänger.Contains("Autogrill", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Mcdonalds", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Restaurant", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Cafe", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Coffee", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("SumUP", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Vinted: @Model.Where(t => t.Zahlungsempfänger.Contains("Vinted", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Rent: @Model.Where(t=> t.Zahlungsempfänger.Contains("Weiland", StringComparison.OrdinalIgnoreCase)).Sum(t=> t.Betrag)</h3>
+<h3>Groceries: @Model.Where(t => t.Zahlungsempfänger.Contains("DM", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Picnic", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Rewe", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Penny", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Netto", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Lidl", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Aldi", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Kubra: @Model.Where(t => t.Zahlungsempfänger.Contains("Yilmaz", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Travel: @Model.Where(t => t.Zahlungsempfänger.Contains("Fernverkehr", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Rheinbahn", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Aral", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Tankstelle", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Trips Away: @Model.Where(t => t.Zahlungsempfänger.Contains("LW.SNCF.CONNECT/92PARIS", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Euro.Disney", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Luxembourg", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Insurance: @Model.Where(t => t.Zahlungsempfänger.Contains("Allianz Direct", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Versicherung", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Rechtsschutz", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Phone Bills: @Model.Where(t => t.Zahlungsempfänger.Contains("Telekom", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Telefonica", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Klarmobil", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Amazon: @Model.Where(t => t.Zahlungsempfänger.Contains("Amazon", StringComparison.OrdinalIgnoreCase) || t.Zahlungsempfänger.Contains("Amzn", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+<h3>Rundfunk: @Model.Where(t => t.Zahlungsempfänger.Contains("Rundfunk", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Betrag)</h3>
+@foreach (DKBankTransactionResponse dKBankTransactionResponse in @Model.Where(t => !t.Zahlungsempfänger.Contains("Google", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Microsoft", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Phantasialand/Bruhl", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Ridvan Tosun", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("De Brito", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Maria", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("David", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("UZR.stop.go.", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Stadtkasse Duesseldorf", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Autogrill", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Mcdonalds", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("LW.SNCF.CONNECT/92PARIS", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("E.ON Energie Deutschland GmbH", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("SPORTGEISTER-SCHULSPORTSPAß E.V.", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Netflix", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Allianz Direct", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Telekom", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Chancen", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Thalia", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Decathlon", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Restaurant", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Cafe", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Coffee", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("SumUP", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Vinted", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("DM", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Picnic", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Euro.Disney", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Rundfunk", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Luxembourg", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Amazon", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Amzn", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Yilmaz", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Telefonica", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Klarmobil", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Versicherung", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Rechtsschutz", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Fernverkehr", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Rheinbahn", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Aral", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Tankstelle", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Weiland", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Rewe", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Penny", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Netto", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Lidl", StringComparison.OrdinalIgnoreCase) && !t.Zahlungsempfänger.Contains("Aldi", StringComparison.OrdinalIgnoreCase)))
+{
+    <h3>@dKBankTransactionResponse.Buchungsdatum.ToString()?.Substring(0,10) || @dKBankTransactionResponse.Zahlungsempfänger || @dKBankTransactionResponse.Betrag</h3>
+}

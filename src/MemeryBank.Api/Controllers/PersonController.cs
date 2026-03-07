@@ -1,10 +1,10 @@
 ﻿using Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
-using static MemeryBank.Api.Models.Person;
 
 namespace MemeryBank.Api.Controllers
 {
@@ -103,7 +103,7 @@ namespace MemeryBank.Api.Controllers
 
         [Route("[action]/{Id}")]
         [HttpPost]
-        public IActionResult Update(PersonUpdateRequest personResponse)
+        public IActionResult Update(PersonUpdateRequest personUpdateReq)
         {
             if (!ModelState.IsValid)
             {
@@ -112,19 +112,35 @@ namespace MemeryBank.Api.Controllers
                 List<CountryResponse> countries = _countriesService.GetAllCountries();
                 return View(countries);
             }
+            
+            _personService.UpdatePerson(personUpdateReq);
+            return RedirectToAction("Index", "Person");
+        }
 
-            PersonUpdateRequest personUpdateRequest = new()
+        [Route("[action]/{Id}")]
+        [HttpGet]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            PersonResponse? personResponse = _personService.GetPersonByID(id);
+            if(personResponse != null)
             {
-                Id = (Guid)personResponse.Id,
-                Name = personResponse.Name,
-                Email = personResponse.Email,
-                Dob = personResponse.Dob,
-                Gender = personResponse.Gender,
-                CountryId = personResponse.CountryId,
-                Address = personResponse.Address,
-                RecieveNewsLetters = personResponse.RecieveNewsLetters
-            };
-                _personService.UpdatePerson(personUpdateRequest);
+                PersonDeleteRequest personDeleteRequest = new()
+                {
+                    Id = personResponse.Id,
+                    Name = personResponse.Name,
+                    Email = personResponse.Email,
+                    Dob = personResponse.Dob,
+                    Gender = !string.IsNullOrWhiteSpace(personResponse.Gender)
+                    && Enum.TryParse<GenderOptions>(personResponse.Gender, ignoreCase: true, out var parsedGender)
+                    ? parsedGender
+                    : (GenderOptions?)null,
+                    Address = personResponse.Address,
+                    CountryId = personResponse.CountryId,
+                    RecieveNewsletters = personResponse.RecieveNewsletters,
+                };
+                _personService.DeletePerson(personDeleteRequest);
+            }
+               
             return RedirectToAction("Index", "Person");
         }
     }

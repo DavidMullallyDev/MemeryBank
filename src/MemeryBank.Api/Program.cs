@@ -1,17 +1,12 @@
 using Autofac;
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
+using Entities;
 using MemeryBank.Api.Constraints;
 using MemeryBank.Api.Middleware;
-using MemeryBank.Api.ModelBinders;
 using MemeryBank.Api.Models;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Primitives;
-using Microsoft.OpenApi.Services;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using Services;
-using System.Dynamic;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory()); //this line replaxes the built in DI container with the Autofac DI container
@@ -77,6 +72,13 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
 
 builder.Services.AddSingleton<ICountriesService, CountriesService>();
 builder.Services.AddSingleton<IPersonService, PersonsService>();
+builder.Services.AddSingleton<IN26BankTransactionService, N26BankTransactionService>();
+builder.Services.AddSingleton<IDKBBankTransactionService, DKBBankTransactionService>();
+builder.Services.AddSingleton<ICalenderService, CalenderService>();
+
+builder.Services.AddDbContext<PersonDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=MemeryBankDatabase;Integrated Security=True;Connect Timeout=30;Encrypt=True;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False;Command Timeout=30
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 //if (app.Environment.IsEnvironment("Beta")) app.UseDeveloperExceptionPage(); example you created a custom environment Beta

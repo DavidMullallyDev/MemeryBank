@@ -75,7 +75,8 @@ namespace ServiceContracts.DTO
 
         public static PersonUpdateRequest ToPersonUpdateRequest(this Person person)
         {
-            return new PersonUpdateRequest()
+            return new 
+                PersonUpdateRequest()
             {
                 Id = person.Id,
                 Name = person.Name,

@@ -1,0 +1,32 @@
+[
+  {
+    "Id": "3201A91D-F003-4BAE-8A79-D17985EF1E5C",
+    "Name": "Dengo",
+    "Email": "mullallydavid7@gmail.com",
+    "Dob": "1985-01-07",
+    "Gender": "Male",
+    "CountryId": "7263E481-B106-4AD5-B74B-3DD232D0D761",
+    "Address": "HerderStr. 22, 40237 Düsseldorf",
+    "RecieveNewsLetters" :  true
+  },
+  {
+    "Id": "62FF3027-3009-44D2-9F6C-8DF737472108",
+    "Name": "Doodles",
+    "Email": "dudalice@gmail.com",
+    "Dob": "1991-05-16",
+    "Gender": "Female",
+    "CountryId": "0D14EF6E-8E55-476D-99F5-49BE2E0C2FE8",
+    "Address": "HerderStr. 22, 40237 Düsseldorf",
+    "RecieveNewsLetters": false
+  },
+  {
+    "Id": "E8C5BE49-F288-48D4-928A-368AFBAB7F7A",
+    "Name": "Aoifizihna",
+    "Email": "aoife@gmail.com",
+    "Dob": "2023-03-09",
+    "Gender": "Female",
+    "CountryId": "212C665B-BE6F-4B44-AB0A-EF99DBAFC612",
+    "Address": "HerderStr. 22, 40237 Düsseldorf",
+    "RecieveNewsLetters": false
+  }
+]

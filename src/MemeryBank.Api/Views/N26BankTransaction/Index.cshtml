@@ -1,0 +1,178 @@
+﻿@using System.Text.RegularExpressions
+@model IEnumerable<N26BankTransactionResponse>
+<form asp-controller="N26BankTransaction" asp-action="@ViewBag.Method" method="post">
+    <div style="display:flex">
+        <select name="year">
+            @{
+                for (int i = 2025; i <= 2100; i++)
+                {
+                    if (i == ViewBag.CurrentSelectedYear)
+                    {
+                        <option value="@i" selected="selected">@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            }
+        </select>
+        <select name="month">
+            @{
+                string[] months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                if(ViewBag.CurrentSelectedYear == 2025)
+                {
+                    for (int i = 11; i <= 12; i++)
+                    {
+                        if (i == ViewBag.CurrentSelectedMonth)
+                        {
+                            <option value="@i" selected="selected">@months[i - 1]</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@months[i - 1]</option>
+                        }
+                    }
+                } 
+                else if(ViewBag.CurrentSelectedYear == DateTime.Now.Year)
+                {
+                    for (int i = 1; i <= DateTime.Now.Month; i++)
+                    {
+                        if (i == ViewBag.CurrentSelectedMonth)
+                        {
+                            <option value="@i" selected="selected">@months[i - 1]</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@months[i - 1]</option>
+                        }
+                    }
+                }
+                else 
+                {
+                    for (int i = 1; i <= 12; i++)
+                    {
+                        if (i == ViewBag.CurrentSelectedMonth)
+                        {
+                            <option value="@i" selected="selected">@months[i - 1]</option>
+                        }
+                        else
+                        {
+                            <option value="@i">@months[i - 1]</option>
+                        }
+                    }
+                }
+            }
+        </select>
+    </div>
+    <button type="submit">Show</button>
+</form>
+@{
+    var total = Model.Sum(t => t.Amount);
+    if (total >= 0)
+    {
+        <h3 style="color:green"> Total: @total </h3>
+    }
+    else
+    {
+        <h3 style="color:red"> Total: @total </h3>
+    }  
+} 
+<br />
+<h3 style="color:green">Income: @Model.Where(t => t.PartnerName.Contains("Maria Eduarda de Brito Pimentel und David Mullally", StringComparison.OrdinalIgnoreCase) || t.Amount > 0 ).Sum(t => t.Amount)</h3>
+<h3>Groceries: @Model.Where(t => t.PartnerName.Contains("REWE", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Penny", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("DM", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Flink", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Netto", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Lidl", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Picnic", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Aldi", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Travel: @Model.Where(t => t.PartnerName.Contains("Fernvekehr", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Rheinbahn", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Tankstelle", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Service Station", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Aral", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>HelloFresh: @Model.Where(t => t.PartnerName.Contains("HelloFresh", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Post: @Model.Where(t => t.PartnerName.Contains("Deutsche Post", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Streaming Subs: @Model.Where(t => t.PartnerName.Contains("Apple", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Disney", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Paramount", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Spotify", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("HBOMAX", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Eating Out: @Model.Where(t => t.PartnerName.Contains("Brasserie", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("LeCrobag", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Copenhagen Coff", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Rest Duck", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Restaurant", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Takumi", StringComparison.OrdinalIgnoreCase) ||  t.PartnerName.Contains("Cafe", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Coffee", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Nostimo", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Oehme", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Moskito", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Terbuyken", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Beckerei", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Medical: @Model.Where(t => t.PartnerName.Contains("Apotheke", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Amazon: @Model.Where(t => t.PartnerName.Contains("Amzn", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Amazon", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Vinted: @Model.Where(t => t.PartnerName.Contains("Vinted", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Etsy: @Model.Where(t => t.PartnerName.Contains("Etsy", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Going Out: @Model.Where(t => t.PartnerName.Contains("bmine Hotel Dusseldorf", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Wellnest", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Henri Hotel", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("UFA-Palast", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Mitsubishi", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Stuff for the House: @Model.Where(t => t.PartnerName.Contains("Ikea", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Stuff for Aoife: @Model.Where(t => t.PartnerName.Contains("Baby", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Banaby", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Activities for Aoife: @Model.Where(t => t.PartnerName.Contains("Evangelisches Familienbildungswerk Dusseldorf e.V.", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("ASG Arbeitsgemeinschaft Sozialpadagogik und Gesellschaftsbildung e.V.", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Cloths: @Model.Where(t => t.PartnerName.Contains("HM", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Peek &", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount) </h3>
+<h3>Take-out food: @Model.Where(t => t.PartnerName.Contains("Takeaway", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("Wolt", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("HAAGEN-DAZS", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount) </h3>
+<h3>ATM Withdrawals: @Model.Where(t => (t.PartnerName.Contains("Maria Eduarda de Brito Pimentel", StringComparison.OrdinalIgnoreCase) || t.PartnerName.Contains("David Mullally", StringComparison.OrdinalIgnoreCase)) && t.Amount < 0).Sum(t => t.Amount)</h3>
+<h3>PlaystatIon: @Model.Where(t => t.PartnerName.Contains("Playstation", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+<h3>Mayerische: @Model.Where(t => t.PartnerName.Contains("Thalia", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+@{
+    IEnumerable<N26BankTransactionResponse> paypal = Model.Where(t => t.PartnerName.Contains("Paypal", StringComparison.OrdinalIgnoreCase) && !t.PartnerName.Contains("Hellofresh", StringComparison.OrdinalIgnoreCase) && !t.PartnerName.Contains("Disneyplus", StringComparison.OrdinalIgnoreCase)).ToList();
+}
+<h3>Paypal: @paypal.Where(t => !t.PartnerName.Contains("Spotify", StringComparison.OrdinalIgnoreCase) && !t.PartnerName.Contains("Hellofresh", StringComparison.OrdinalIgnoreCase)).Sum(t => t.Amount)</h3>
+@foreach (N26BankTransactionResponse paypalPayment in paypal)
+{
+    if (!paypalPayment.PartnerName.Contains("Spotify", StringComparison.OrdinalIgnoreCase) && !paypalPayment.PartnerName.Contains("Hellofresh", StringComparison.OrdinalIgnoreCase))
+    {
+        <h6>@Regex.Replace(@paypalPayment.PartnerName, @"^\s*PAYPAL\s*\*\s*", "", RegexOptions.IgnoreCase).Trim() : @paypalPayment.Amount;</h6>
+    }
+}
+@foreach (N26BankTransactionResponse transaction in Model.Where(t => 
+!t.PartnerName.Contains("REWE", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Penny", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("DM", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Flink", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Netto", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Lidl", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Picnic", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Aldi", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Rheinbahn", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Service Station", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Fernvekehr", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Aral", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Tankstelle", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("HelloFresh", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Deutsche Post", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Apple", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Disney", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Paramount", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Spotify", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("HBOMAX", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Cafe", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Brasserie", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Coffee", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Nostimo", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Lecrobag", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Oehme", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Moskito", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Terbuyken", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Beckerei", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Takumi", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Restaurant", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Rest Duck", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Copenhagen Coff", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("HAAGEN-DAZS", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Apotheke", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Amzn", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Amazon", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Vinted", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Paypal", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("UFA-Palast", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Wellnest", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("bmine Hotel Dusseldorf", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Henri Hotel", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Mitsubishi", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Ikea", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Baby", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("HM", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Peek &", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("ETSY", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Wolt", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Takeaway", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Maria Eduarda de Brito Pimentel", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("David Mullally", StringComparison.OrdinalIgnoreCase) && 
+!t.PartnerName.Contains("Fernverkehr", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Evangelisches Familienbildungswerk Dusseldorf e.V.", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Baby", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Playstation", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Takeaway", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Thalia", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("Banaby", StringComparison.OrdinalIgnoreCase) &&
+!t.PartnerName.Contains("ASG Arbeitsgemeinschaft Sozialpadagogik und Gesellschaftsbildung e.V.", StringComparison.OrdinalIgnoreCase)
+))
+{
+    <h5>@transaction.ValueDate.ToShortDateString() | @transaction.PartnerName | @transaction.Amount </h5>
+}

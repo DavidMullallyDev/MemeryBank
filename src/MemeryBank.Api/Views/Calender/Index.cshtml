@@ -1,0 +1,78 @@
+﻿<form asp-controller="Calender" asp-action="@ViewBag.Method" method="post">
+    <div style="display:flex">
+        <select name="year">
+            @{
+                for (int i = DateTime.Now.Year; i <= 2100; i++)
+                {
+                    if (i == ViewBag.CurrentSelectedYear)
+                    {
+                        <option value="@i" selected="selected">@i</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            }
+        </select>
+        <select name="month">
+            @{
+                string[] months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                for (int i = 1; i <= 12; i++)
+                {
+                    if (i == ViewBag.CurrentSelectedMonth)
+                    {
+                        <option value="@i" selected="selected">@months[i -1]</option>
+                    }
+                    else
+                    {
+                        <option value="@i">@months[i -1]</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+    <button type="submit">Show</button>
+</form>
+<table>
+    <thead>
+        <tr>
+            <th style="border: double; width: 14.28%;">Monday</th>
+            <th style="border: double; width: 14.28%;">Tuesday</th>
+            <th style="border: double; width: 14.28%;">Wednesday</th>
+            <th style="border: double; width: 14.28%;">Thursday</th>
+            <th style="border: double; width: 14.28%;">Friday</th>
+            <th style="border: double; width: 14.28%;">Saturday</th>
+            <th style="border: double; width: 14.28%;">Sunday</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var week in ViewBag.Calendar)
+        {
+            <tr>
+                @foreach (var day in week)
+                {
+                    if (day == null)
+                    {
+                        <td style="border: double; height: 100px; background-color: gray"></td>
+                    }
+                    else
+                    {
+                        if (day != null)
+                        {
+                            <td style="border: double; height: 100px; background-color: lightblue;">
+                                @day.Day
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="border: double; height: 100px;">
+                                @day.Day
+                            </td>
+                        }
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

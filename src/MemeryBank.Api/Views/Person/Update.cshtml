@@ -7,6 +7,7 @@
 <h2>@ViewBag.Title</h2>
 <div style="width: 50%">
     <form asp-controller="Person" asp-action="@ViewBag.Method" method="post">
+        <input type="hidden" asp-for="Id" />
         <div style="display:flex">
             <label asp-for="Name">Person Name:</label>
             <input asp-for="Name" />
@@ -47,6 +48,9 @@
         <div style="display:flex">
             <input type="checkbox" asp-for="RecieveNewsLetters" />
             <label asp-for="RecieveNewsLetters">Recieve News Letters:</label>
+        </div>
+        <div>
+            <a asp-controller="Person" asp-action="Delete" asp-route-Id="@Model.Id" style="color: red;">Delete Person</a>
         </div>
         <button type="submit">Submit</button>
 
