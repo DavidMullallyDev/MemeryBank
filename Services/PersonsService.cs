@@ -3,35 +3,38 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services.Helpers;
-using System.Net.Http.Headers;
 
 namespace Services
 {
     public class PersonsService : IPersonService
     {
         //Private field
-        private readonly List<Person> _persons;
-        private readonly CountriesService _countriesService;
+        //private readonly List<Person> _persons;
+        private readonly ICountriesService _countriesService;
+        private readonly PersonDbContext _db;
 
-        public PersonsService(bool initialize = true)
+        //public PersonsService(bool initialize = true)
+        public PersonsService(PersonDbContext personDbContext, ICountriesService countriesService)
         {
-            _persons = [];
-            _countriesService = new CountriesService();
+            _db = personDbContext;
+            _countriesService = countriesService;
+            //_persons = [];
+            //_countriesService = new CountriesService(_db);
 
-            List <CountryResponse> allCountries = _countriesService.GetAllCountries();
-            if (initialize)
-            {
-                AddPerson(new PersonAddRequest() { Name = "Rhoda", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
-                AddPerson(new PersonAddRequest() { Name = "Anjela", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
-                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
-                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
-                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
-                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
-                AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
-                AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
-                AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
-                AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
-            }
+            //List <CountryResponse> allCountries = _countriesService.GetAllCountries();
+            //if (initialize)
+            //{
+                //AddPerson(new PersonAddRequest() { Name = "Rhoda", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                //AddPerson(new PersonAddRequest() { Name = "Anjela", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                //AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                //AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                //AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                //AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                //AddPerson(new PersonAddRequest() { Name = "P3", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                //AddPerson(new PersonAddRequest() { Name = "P4", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+                //AddPerson(new PersonAddRequest() { Name = "P1", Address = "address1", CountryId = allCountries[0].CountryId, Dob = new DateTime(1985, 7, 1), Email = "email1@email.com", Gender = GenderOptions.Diverse, RecieveNewsLetters = true });
+                //AddPerson(new PersonAddRequest() { Name = "P2", Address = "address2", CountryId = allCountries[1].CountryId, Dob = new DateTime(1965, 9, 10), Email = "email2@email.com", Gender = GenderOptions.Female, RecieveNewsLetters = false });
+            //}
         }
 
         private PersonResponse ConvertPersonToPersonResponse(Person person)
@@ -60,7 +63,9 @@ namespace Services
             person.Id = Guid.NewGuid();
 
             //Add person to list/Datastore
-            _persons.Add(person);
+            //_persons.Add(person);
+            _db.Persons.Add(person);
+            _db.SaveChanges();
 
             PersonResponse personResponse = person.ToPersonResponse();
             personResponse.Country = _countriesService.GetCountryByID(personResponse.CountryId)?.CountryName;
@@ -70,13 +75,16 @@ namespace Services
 
         public List<PersonResponse> GetPersonList()
         {
-            List<PersonResponse> list = [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
-            return [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
+            //List<PersonResponse> list = [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
+            List<PersonResponse> list = [.. _db.Persons.ToList().Select(p => ConvertPersonToPersonResponse(p))];
+            //return [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
+            return [.. _db.Persons.ToList().Select(p => ConvertPersonToPersonResponse(p))];
         }
 
         public PersonResponse? GetPersonByID(Guid? Id)
         {
-            PersonResponse? personResponse = _persons.FirstOrDefault(p => p.Id.Equals(Id))?.ToPersonResponse();
+            //PersonResponse? personResponse = _persons.FirstOrDefault(p => p.Id.Equals(Id))?.ToPersonResponse();
+            PersonResponse? personResponse = _db.Persons.FirstOrDefault(p => p.Id.Equals(Id))?.ToPersonResponse();
             return personResponse ?? null;
         }
 
@@ -161,7 +169,8 @@ namespace Services
 
             ValidationHelper.ModelValidation(personUpdateRequest);
 
-            Person? personToUpdate = _persons.Where(p => p.Id == personUpdateRequest?.Id).FirstOrDefault() ?? throw new ArgumentException($"No person found with this Id: {personUpdateRequest.Id}");
+            //Person? personToUpdate = _persons.Where(p => p.Id == personUpdateRequest?.Id).FirstOrDefault() ?? throw new ArgumentException($"No person found with this Id: {personUpdateRequest.Id}");
+            Person? personToUpdate = _db.Persons.FirstOrDefault(p => p.Id == personUpdateRequest.Id) ?? throw new ArgumentException($"No person found with this Id: {personUpdateRequest.Id}");
 
             personToUpdate.Address = personUpdateRequest?.Address;
             personToUpdate.Gender = personUpdateRequest?.Gender.ToString();
@@ -171,6 +180,7 @@ namespace Services
             personToUpdate.Dob = personUpdateRequest.Dob;
             personToUpdate.Name = personUpdateRequest.Name;
 
+            _db.SaveChanges();
             return personToUpdate.ToPersonResponse();     
         }
 
@@ -178,7 +188,8 @@ namespace Services
         {
             if (personDeleteRequest == null) throw new ArgumentNullException();
 
-            Person? personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+            //Person? personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+            Person? personToDelete = _db.Persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
 
             if ( personToDelete == null)
             {
@@ -186,13 +197,16 @@ namespace Services
             }
             else
             {
-                if(_persons != null)
+                //if(_persons != null)
+                if (_db.Persons != null)
                 {
-                    personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+                    //personToDelete = _persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
+                    personToDelete = _db.Persons.Where(p => p.Id == personDeleteRequest.Id).FirstOrDefault();
                     if (personToDelete != null)
                     {
-                        _persons.Remove(personToDelete);
-
+                        //_persons.Remove(personToDelete);
+                        _db.Persons.Remove(personToDelete);
+                        _db.SaveChanges();
                         return personToDelete.ToPersonResponse();
                     }
                 }

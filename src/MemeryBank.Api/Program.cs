@@ -70,8 +70,10 @@ builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
     config.AddJsonFile("customConfig.json", optional: true); //can add  tgird argument "reloadOnChange:true" if you want the app to auto reload whenever you make a change in the json file
 });
 
-builder.Services.AddSingleton<ICountriesService, CountriesService>();
-builder.Services.AddSingleton<IPersonService, PersonsService>();
+//builder.Services.AddSingleton<ICountriesService, CountriesService>();
+//builder.Services.AddSingleton<IPersonService, PersonsService>();
+builder.Services.AddScoped<ICountriesService, CountriesService>();
+builder.Services.AddScoped<IPersonService, PersonsService>();
 builder.Services.AddSingleton<IN26BankTransactionService, N26BankTransactionService>();
 builder.Services.AddSingleton<IDKBBankTransactionService, DKBBankTransactionService>();
 builder.Services.AddSingleton<ICalenderService, CalenderService>();
