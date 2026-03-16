@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace Entities
@@ -38,6 +39,23 @@ namespace Entities
         public List<Person> SP_GetPersonsList()
         {
             return [.. Persons.FromSqlRaw("EXECUTE [dbo].[GetPersonsList]")];
+        }
+
+        public int SP_AddPerson(Person person)
+        {
+            SqlParameter[] parameters =
+            [
+               new SqlParameter("Id", person.Id),
+               new SqlParameter("@Name", person.Name ?? (object)DBNull.Value),
+               new SqlParameter("@Email", person.Email ?? (object)DBNull.Value),
+               new SqlParameter("@Dob", person.Dob ?? (object)DBNull.Value),
+               new SqlParameter("@Gender", person.Gender ?? (object)DBNull.Value),
+               new SqlParameter("@CountryId", person.CountryId ?? (object)DBNull.Value),
+               new SqlParameter("@Address", person.Address ?? (object)DBNull.Value),
+               new SqlParameter("@RecieveNewsLetters", person.RecieveNewsLetters)
+            ];
+
+            return Database.ExecuteSqlRaw("EXECUTE [dbo].[AddPerson] @Id, @Name, @Email, @Dob, @Gender, @CountryId, @Address, @RecieveNewsLetters", parameters);
         }
     }
 }

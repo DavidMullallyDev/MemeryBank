@@ -64,8 +64,9 @@ namespace Services
 
             //Add person to list/Datastore
             //_persons.Add(person);
-            _db.Persons.Add(person);
-            _db.SaveChanges();
+            //_db.Persons.Add(person);
+            //_db.SaveChanges();
+            _db.SP_AddPerson(person);
 
             PersonResponse personResponse = person.ToPersonResponse();
             personResponse.Country = _countriesService.GetCountryByID(personResponse.CountryId)?.CountryName;
