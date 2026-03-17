@@ -20,5 +20,7 @@ namespace Entities
         [StringLength(500)]
         public string? Address { get; set; }
         public bool RecieveNewsLetters { get; set; }
+
+        public string? TIN { get; set; } //Tax Identification Number
     }
 }

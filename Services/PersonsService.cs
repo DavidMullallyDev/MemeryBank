@@ -64,9 +64,11 @@ namespace Services
 
             //Add person to list/Datastore
             //_persons.Add(person);
-            //_db.Persons.Add(person);
-            //_db.SaveChanges();
-            _db.SP_AddPerson(person);
+            _db.Persons.Add(person);
+            _db.SaveChanges();
+
+            //TODO: refactor to use stored proecedure---new column TIN was added so the SP needs to be updated to include this column.
+            //_db.SP_AddPerson(person);
 
             PersonResponse personResponse = person.ToPersonResponse();
             personResponse.Country = _countriesService.GetCountryByID(personResponse.CountryId)?.CountryName;
@@ -79,8 +81,10 @@ namespace Services
             //List<PersonResponse> list = [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
             List<PersonResponse> list = [.. _db.Persons.ToList().Select(p => ConvertPersonToPersonResponse(p))];
             //return [.. _persons.Select(p => ConvertPersonToPersonResponse(p))];
-            //return [.. _db.Persons.ToList().Select(p => ConvertPersonToPersonResponse(p))];
-            return [.. _db.SP_GetPersonsList().Select(p => ConvertPersonToPersonResponse(p))];
+            return [.. _db.Persons.ToList().Select(p => ConvertPersonToPersonResponse(p))];
+
+            //TODO: refactor to use stored proecedure---new column TIN was added so the SP needs to be updated to include this column and then we can use the SP here instead of ToList() and Select()
+            //return [.. _db.SP_GetPersonsList().Select(p => ConvertPersonToPersonResponse(p))];
         }
 
         public PersonResponse? GetPersonByID(Guid? Id)
